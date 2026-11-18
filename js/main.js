@@ -5,70 +5,47 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ------------------------------------------------------------
-     Geometría del avión
-     Zonas donde los aviones que regresaron muestran impactos
-     (alas, fuselaje, cola) y zonas letales (motores, cabina).
+     Avión de referencia (coordenadas de la imagen, 960 x 716)
+     LETHAL: zonas sin impactos en el diagrama (motores, cabina,
+     torreta, fuselaje trasero). Ahí se dibuja la IA no detectada.
   ------------------------------------------------------------ */
+  var HITS = window.PLANE_HITS || [];
   var LETHAL = [
-    { x: 400, y: 296, r: 34 }, { x: 300, y: 312, r: 34 },
-    { x: 600, y: 296, r: 34 }, { x: 700, y: 312, r: 34 },
-    { x: 500, y: 120, r: 30 }
+    { x: 377, y: 185, r: 30, lx: 290, ly: 105 },
+    { x: 573, y: 185, r: 30, lx: 655, ly: 105 },
+    { x: 475, y: 172, r: 26, lx: 545, ly: 40 },
+    { x: 476, y: 427, r: 30, lx: 300, ly: 440 },
+    { x: 477, y: 545, r: 22, lx: 640, ly: 560 }
   ];
-  var SAFE_SPOTS = [
-    { x: 190, y: 332 }, { x: 812, y: 330 }, { x: 500, y: 440 }, { x: 392, y: 612 },
-    { x: 612, y: 608 }, { x: 140, y: 338 }, { x: 858, y: 342 }, { x: 503, y: 510 }
-  ];
-
-  function rng(seed) {
-    return function () {
-      seed = (seed * 1664525 + 1013904223) % 4294967296;
-      return seed / 4294967296;
-    };
-  }
-
-  function zonePaths() {
-    var paths = [];
-    document.querySelectorAll("#plane .zone").forEach(function (el) {
-      paths.push(new Path2D(el.getAttribute("d")));
-    });
-    return paths;
-  }
-
-  function nearLethal(x, y, pad) {
-    for (var i = 0; i < LETHAL.length; i++) {
-      var dx = x - LETHAL[i].x, dy = y - LETHAL[i].y;
-      if (Math.sqrt(dx * dx + dy * dy) < LETHAL[i].r + pad) return true;
-    }
-    return false;
-  }
+  var MINE_TARGETS = [[100, 250], [860, 255], [476, 330], [380, 630], [570, 630], [320, 300], [620, 300], [476, 380]];
 
   function circle(cls, x, y, r) {
     var c = document.createElementNS(SVGNS, "circle");
     c.setAttribute("class", cls);
-    c.setAttribute("cx", x.toFixed(1));
-    c.setAttribute("cy", y.toFixed(1));
+    c.setAttribute("cx", x);
+    c.setAttribute("cy", y);
     c.setAttribute("r", r);
     return c;
+  }
+  function svgEl(tag, attrs) {
+    var n = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    return n;
+  }
+  function nearestHit(t) {
+    var best = 0, bd = Infinity;
+    HITS.forEach(function (h, i) {
+      var d = (h[0] - t[0]) * (h[0] - t[0]) + (h[1] - t[1]) * (h[1] - t[1]);
+      if (d < bd) { bd = d; best = i; }
+    });
+    return best;
   }
 
   /* Portada: los impactos de los aviones que sí regresaron */
   function drawHeroHits() {
     var g = document.getElementById("hero-hits");
-    if (!g || typeof Path2D === "undefined") return;
-    var ctx = document.createElement("canvas").getContext("2d");
-    var paths = zonePaths();
-    var rand = rng(1943);
-    var placed = 0, tries = 0;
-    while (placed < 64 && tries < 6000) {
-      tries++;
-      var x = 60 + rand() * 880, y = 50 + rand() * 620;
-      var inside = paths.some(function (p) { return ctx.isPointInPath(p, x, y); });
-      if (!inside || nearLethal(x, y, 18)) continue;
-      // evitar el borde exacto del fuselaje en la nariz
-      if (y < 170) continue;
-      g.appendChild(circle("hit", x, y, 4 + rand() * 2.5));
-      placed++;
-    }
+    if (!g) return;
+    HITS.forEach(function (h) { g.appendChild(circle("hit", h[0], h[1], 6)); });
   }
 
   /* ------------------------------------------------------------
@@ -146,8 +123,9 @@
       dots.appendChild(el("span", { "class": k < state.i ? "is-done" : (k === state.i ? "is-current" : "") }));
     });
 
-    var frame = el("figure", { "class": "frame" });
-    frame.appendChild(mediaFor(item));
+    var box = el("div", { "class": "frame" });
+    box.appendChild(mediaFor(item));
+    var frame = el("figure", { "class": "frame-wrap" }, [box, el("figcaption", { "class": "fig-label", text: "FIG. 2." + (state.i + 1) })]);
 
     var btnReal = el("button", { type: "button", "aria-pressed": "false", text: "Es real" });
     var btnAI = el("button", { type: "button", "aria-pressed": "false", text: "Es IA" });
@@ -193,39 +171,43 @@
   }
 
   function resultsPlane(aiResults) {
-    var svg = document.createElementNS(SVGNS, "svg");
-    svg.setAttribute("viewBox", "0 0 1000 720");
-    svg.setAttribute("class", "results__plane");
-    svg.setAttribute("role", "img");
+    var svg = svgEl("svg", { viewBox: "-20 -40 1000 790", "class": "results__plane", role: "img" });
     var detected = aiResults.filter(function (r) { return r.hit; }).length;
-    svg.setAttribute("aria-label", "Avión con " + detected + " impactos visibles y " + (aiResults.length - detected) + " marcas amarillas en motores y cabina, que representan la IA no detectada.");
-    var use = document.createElementNS(SVGNS, "use");
-    use.setAttribute("href", "#plane");
+    svg.setAttribute("aria-label", "Avión con " + detected + " impactos rojos, que son la IA que detectaste, y " + (aiResults.length - detected) + " círculos punteados en los motores y la cabina, que son la IA que pasó como real.");
+    var use = svgEl("use", { href: "assets/plane.svg#plane", "class": "plane-ink", x: 0, y: 0, width: 960, height: 716 });
     svg.appendChild(use);
 
-    var safe = 0, lethal = 0, delay = 0;
+    var old = svgEl("g", {});
+    HITS.forEach(function (h) { old.appendChild(circle("hit-old", h[0], h[1], 6)); });
+    svg.appendChild(old);
+
+    var used = {}, safe = 0, lethal = 0, delay = 0;
     aiResults.forEach(function (r) {
-      var node;
+      var g = svgEl("g", { "class": "is-new" });
       if (r.hit) {
-        var p = SAFE_SPOTS[safe++ % SAFE_SPOTS.length];
-        node = circle("hit is-new", p.x, p.y, 16);
+        var idx = nearestHit(MINE_TARGETS[safe++ % MINE_TARGETS.length]);
+        while (used[idx]) idx = (idx + 7) % HITS.length;
+        used[idx] = true;
+        var h = HITS[idx];
+        g.appendChild(circle("hit-mine", h[0], h[1], 11));
+        g.appendChild(circle("hit-ring", h[0], h[1], 19));
       } else {
         var q = LETHAL[lethal++ % LETHAL.length];
-        node = document.createElementNS(SVGNS, "g");
-        node.appendChild(circle("ghost is-new", q.x, q.y, q.r));
-        var t = document.createElementNS(SVGNS, "text");
-        t.setAttribute("class", "ghost-label");
-        t.setAttribute("x", q.x + q.r + 6);
-        t.setAttribute("y", q.y - q.r + 6);
+        g.appendChild(circle("ghost", q.x, q.y, q.r));
+        var ang = Math.atan2(q.ly - q.y, q.lx - q.x);
+        var sx = q.x + Math.cos(ang) * (q.r + 4), sy = q.y + Math.sin(ang) * (q.r + 4);
+        var mx = (sx + q.lx) / 2 + 18, my = (sy + q.ly) / 2 - 10;
+        g.appendChild(svgEl("path", { "class": "leader", d: "M" + sx + " " + sy + " Q" + mx + " " + my + " " + q.lx + " " + q.ly }));
+        var t = svgEl("text", { "class": "refnum", x: q.lx + (q.lx < q.x ? -14 : 4), y: q.ly + (q.ly < q.y ? -6 : 22), "text-anchor": q.lx < q.x ? "end" : "start" });
         t.textContent = String(r.n);
-        node.appendChild(t);
+        g.appendChild(t);
       }
-      node.style.animationDelay = (0.4 + delay * 0.35) + "s";
-      Array.prototype.forEach.call(node.querySelectorAll ? node.querySelectorAll(".is-new") : [], function (c) { c.style.animationDelay = node.style.animationDelay; });
+      g.style.animationDelay = (0.3 + delay * 0.3) + "s";
       delay++;
-      svg.appendChild(node);
+      svg.appendChild(g);
     });
-    return svg;
+    var fig = el("figure", null, [svg, el("figcaption", { "class": "fig-label", text: "FIG. 3" })]);
+    return fig;
   }
 
   function renderResults() {
@@ -248,13 +230,14 @@
     text.appendChild(el("h2", { text: "Tu avión regresó así" }));
     text.appendChild(el("p", { "class": "results__score", html: aiHit + " de " + aiTotal + "<small>piezas generadas con IA que detectaste</small>" }));
     text.appendChild(el("ul", { "class": "legend" }, [
-      el("li", null, [el("i", { "class": "l-hit" }), document.createTextNode("IA que detectaste")]),
-      el("li", null, [el("i", { "class": "l-ghost" }), document.createTextNode("IA que pasó como real")])
+      el("li", null, [el("i", { "class": "l-mine" }), document.createTextNode("IA que detectaste")]),
+      el("li", null, [el("i", { "class": "l-ghost" }), document.createTextNode("IA que pasó como real")]),
+      el("li", null, [el("i", { "class": "l-old" }), document.createTextNode("Impactos del diagrama original")])
     ]));
 
     var msg;
     if (aiHit === aiTotal) msg = "Detectaste todas las piezas de IA de esta prueba. Aun así, son piezas de pruebas públicas, elegidas para poder detectarse. En tu feed no hay nadie que te avise cuáles revisar.";
-    else msg = "Cada pieza que detectaste es un impacto en el avión que regresó. Las " + (aiTotal - aiHit) + " que no detectaste están en amarillo, sobre los motores y la cabina: son los aviones que no regresaron. Si alguien te preguntara cuánta IA viste hoy, esas no estarían en tu cuenta.";
+    else msg = "Cada pieza que detectaste es un impacto en rojo sobre el avión que regresó. Las " + (aiTotal - aiHit) + " que no detectaste están marcadas con su número en los motores y la cabina, las zonas donde un impacto derriba el avión: son los aviones que no regresaron. Si alguien te preguntara cuánta IA viste hoy, esas no estarían en tu cuenta.";
     text.appendChild(el("p", { text: msg }));
     if (falseAlarms > 0) {
       text.appendChild(el("p", { text: "Además, marcaste como IA " + (falseAlarms === 1 ? "una pieza real" : falseAlarms + " piezas reales") + ". Ese es el otro lado del problema: cuando todo puede ser falso, también lo real empieza a ponerse en duda." }));
