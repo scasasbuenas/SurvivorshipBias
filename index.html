@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lo que no regresó | Sesgo de supervivencia e inteligencia artificial</title>
+  <meta name="description" content="Ensayo multimedia de Santiago Casasbuenas: por qué la sensación de ver menos contenido de IA en redes sociales es un sesgo de supervivencia.">
+  <meta name="author" content="Santiago Casasbuenas">
+  <meta property="og:title" content="Lo que no regresó">
+  <meta property="og:description" content="La sensación de ver menos contenido de IA en redes es un sesgo de supervivencia. Un ensayo con prueba interactiva.">
+  <meta name="theme-color" content="#1d3f94">
+  <link rel="preload" href="assets/fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/source-serif-4-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231d3f94'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23e9eef3'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<header class="hero" id="inicio">
+  <div class="hero__grid" aria-hidden="true"></div>
+
+  <svg class="hero__plane" id="hero-plane" viewBox="0 0 1000 720" aria-hidden="true">
+    <defs>
+      <g id="plane">
+        <line class="plane-axis" x1="500" y1="20" x2="500" y2="705"/>
+        <line class="plane-axis" x1="40" y1="330" x2="960" y2="330"/>
+        <path class="plane-fill plane-outline zone" data-zone="wing" id="p-wing-l" d="M459 262 L92 318 C74 321 66 333 70 346 L78 366 L460 378 Z"/>
+        <path class="plane-fill plane-outline zone" data-zone="wing" id="p-wing-r" d="M541 262 L908 318 C926 321 934 333 930 346 L922 366 L540 378 Z"/>
+        <path class="plane-fill plane-outline zone" data-zone="tail" id="p-tail-l" d="M463 572 L322 600 C310 603 306 613 310 622 L318 640 L466 628 Z"/>
+        <path class="plane-fill plane-outline zone" data-zone="tail" id="p-tail-r" d="M537 572 L678 600 C690 603 694 613 690 622 L682 640 L534 628 Z"/>
+        <path class="plane-fill plane-outline zone" data-zone="body" id="p-body" d="M500 52 C522 56 536 92 540 150 L542 250 L538 520 C536 590 518 640 500 668 C482 640 464 590 462 520 L458 250 L460 150 C464 92 478 56 500 52 Z"/>
+        <path class="plane-detail" d="M486 108 Q500 96 514 108 L512 134 L488 134 Z"/>
+        <path class="plane-detail" d="M120 352 L300 359 M700 359 L880 352 M340 618 L462 612 M538 612 L660 618"/>
+        <rect class="plane-fill plane-outline" x="383" y="255" width="34" height="82" rx="12"/>
+        <rect class="plane-fill plane-outline" x="283" y="270" width="34" height="84" rx="12"/>
+        <rect class="plane-fill plane-outline" x="583" y="255" width="34" height="82" rx="12"/>
+        <rect class="plane-fill plane-outline" x="683" y="270" width="34" height="84" rx="12"/>
+        <path class="plane-outline" d="M366 249 L434 249 M266 264 L334 264 M566 249 L634 249 M666 264 L734 264"/>
+      </g>
+    </defs>
+    <use href="#plane"/>
+    <g id="hero-hits"></g>
+  </svg>
+
+  <div class="hero__inner">
+    <h1 class="claim">
+      <span class="claim__old"><span class="visually-hidden">Lo que se dice en redes: </span><span class="strike">Ya no veo tanto contenido de IA.</span></span>
+      <span class="claim__new"><span class="visually-hidden">Lo que realmente pasa: </span>Ya no reconozco el contenido de IA.</span>
+    </h1>
+    <p class="hero__dek">Un ensayo sobre el sesgo de supervivencia y la ilusión de que la inteligencia artificial está desapareciendo de las redes sociales.</p>
+    <div class="hero__actions">
+      <a class="btn btn--solid" href="#prueba">Hacer la prueba</a>
+      <a class="btn" href="#ensayo">Ir al ensayo</a>
+    </div>
+  </div>
+
+  <div class="hero__foot">
+    <span><strong>Santiago Casasbuenas</strong></span>
+    <span>Ensayo multimedia, noviembre de 2026</span>
+  </div>
+</header>
+
+<main>
+
+<section class="quiz" id="prueba" aria-labelledby="prueba-titulo">
+  <div class="quiz__wrap" id="quiz-root">
+    <h2 id="prueba-titulo">Antes de leer: ocho piezas</h2>
+    <p class="quiz__lede">Algunas son fotografías o videos reales. Otras fueron generadas con inteligencia artificial. En cada una, decide qué es y di qué tan seguro estás. Las respuestas aparecen al final, no antes.</p>
+    <button class="btn btn--solid" type="button" id="quiz-start">Empezar la prueba</button>
+    <noscript><p class="quiz__lede">La prueba necesita JavaScript. El ensayo se puede leer sin él.</p></noscript>
+  </div>
+</section>
+
+<article class="essay" id="ensayo">
+
+  <h2>Lo que no regresa</h2>
+  <p>En los últimos meses se ha vuelto frecuente un tipo particular de video en TikTok e Instagram: alguien mira a la cámara y celebra que su feed parece haberse limpiado, que ya no le aparece tanto contenido generado por inteligencia artificial. La afirmación suena razonable y descansa en una experiencia directa. Sin embargo, tiene un problema de fondo: quien la hace solo puede contar la IA que logró reconocer. La que no reconoció quedó registrada como contenido real y, por lo tanto, no entra en la cuenta.</p>
+
+  <p class="thesis">Este ensayo sostiene que la sensación de que hay menos contenido de IA en las redes sociales no refleja una disminución real, sino un sesgo de supervivencia: solo se contabiliza la IA que se detecta, y esa fracción es cada vez menor a medida que la tecnología mejora.</p>
+
+  <p>Para sustentarlo, se revisa primero el concepto de sesgo de supervivencia y dos falacias emparentadas con él. Después se examina la evidencia experimental sobre la capacidad humana de distinguir contenido sintético y los datos disponibles sobre el volumen de IA en las plataformas. Finalmente, se discute el principal contraargumento, que las plataformas ya etiquetan este contenido, y las consecuencias de este sesgo para la confianza pública.</p>
+
+  <h2>El avión que sí volvió</h2>
+  <p>La imagen clásica del sesgo de supervivencia proviene de la Segunda Guerra Mundial. Según el relato más difundido, el ejército estadounidense estudió los bombarderos que regresaban de sus misiones para decidir dónde reforzar el blindaje, y la intuición inicial fue proteger las zonas con más impactos. El estadístico Abraham Wald, del Statistical Research Group de la Universidad de Columbia, propuso lo contrario: reforzar las zonas sin impactos, porque los aviones alcanzados allí eran precisamente los que no habían regresado (Mangel y Samaniego, 1984).</p>
+  <p>Conviene una precisión. Los historiadores de la estadística advierten que existe muy poco material de primera mano sobre lo que Wald dijo exactamente acerca del daño en los aviones, y que buena parte de la anécdota es una reconstrucción plausible (Casselman, 2016). Su valor, sin embargo, no depende del detalle histórico sino de la lógica: cuando una muestra está filtrada por la supervivencia, la ausencia de datos en un lugar no indica ausencia del fenómeno. Puede indicar exactamente lo contrario.</p>
+  <p>Nassim Taleb (2008) llama a esto <em>evidencia silenciosa</em>: los casos que no superaron el filtro no dejan rastro y por eso se omiten de las conclusiones. Dos variantes populares del mismo error resultan útiles aquí. La primera es la llamada falacia del peluquín, una forma de sesgo de selección y de supervivencia (RationalWiki, s. f.): la convicción de que todos los peluquines se notan, sostenida por alguien que solo ha visto los que se notan, porque los convincentes pasaron inadvertidos. La segunda viene del cine. Ante la queja recurrente de que los efectos digitales se ven falsos, el ensayo audiovisual de RocketJump Film School (2015) mostró que solo se comenta el CGI evidente, mientras que la gran mayoría de los efectos digitales pasa completamente desapercibida (The Conversation, 2016).</p>
+  <p>El caso del contenido de IA tiene exactamente esta estructura. Quien afirma que ya no ve tanta IA está observando los aviones que regresaron: las imágenes con seis dedos, los videos con física imposible, las voces robóticas. A partir de ellos concluye que el problema disminuye. Pero el dato relevante es el que no ve.</p>
+
+  <h2>Ya no se nota</h2>
+  <p>La pregunta empírica es, entonces, cuánta IA logran detectar las personas. La evidencia experimental de los últimos años apunta a una respuesta incómoda: muy poca, y cada vez menos.</p>
+  <p>En el estudio de Nightingale y Farid (2022), publicado en <em>PNAS</em>, 315 participantes clasificaron rostros reales y rostros generados con inteligencia artificial. Su precisión fue del 48%, prácticamente la misma que se obtendría lanzando una moneda. Además, los rostros sintéticos fueron calificados, en promedio, como un 7,7% más confiables que los reales. Miller et al. (2023) fueron más lejos: encontraron que ciertos rostros generados por IA, en particular rostros blancos, sobrerrepresentados en los datos de entrenamiento, eran juzgados como humanos con más frecuencia que los rostros humanos reales. Llamaron a este fenómeno <em>hiperrealismo</em>. Para este ensayo, sin embargo, su hallazgo más importante es otro: los participantes que más se equivocaban eran también los más seguros de sus respuestas.</p>
+  <p>El problema no se limita a los rostros. Cooke et al. (2025) evaluaron a 1.276 personas con imágenes, audio, video y material audiovisual, en condiciones que imitaban una plataforma en línea, y encontraron un desempeño promedio cercano al azar. La precisión empeoraba precisamente cuando el estímulo contenía material sintético. En el caso de la voz, un equipo de Queen Mary University of London encontró que los clones de voz se confundían con voces reales en el 58% de los casos (Queen Mary University of London, 2025). Y en un estudio de la empresa iProov (2025) con 2.000 personas, solo el 0,1% identificó correctamente todos los estímulos, aunque más del 60% confiaba en su capacidad para detectarlos.</p>
+
+  <figure class="fig wide" aria-labelledby="fig1-t">
+    <p class="fig__title" id="fig1-t">Acertar no es lo mismo que sentirse seguro</p>
+    <div class="scale" role="img" aria-label="Rostros: 48 por ciento de acierto, por debajo del 50 por ciento del azar. iProov: más del 60 por ciento confiaba en su capacidad; solo el 0,1 por ciento acertó todas las piezas.">
+      <div class="scale__row">
+        <span class="scale__label">Acierto al distinguir rostros reales de rostros de IA</span>
+        <div class="scale__track"><div class="scale__fill" style="width:48%"></div><span class="scale__val scale__val--in" style="left:0">48%</span><span class="scale__chance"></span></div>
+      </div>
+      <div class="scale__row">
+        <span class="scale__label">Personas seguras de poder detectar deepfakes</span>
+        <div class="scale__track"><div class="scale__fill scale__fill--lapiz" style="width:60%"></div><span class="scale__val" style="left:0">más de 60%</span><span class="scale__chance"></span></div>
+      </div>
+      <div class="scale__row">
+        <span class="scale__label">Personas que acertaron todas las piezas</span>
+        <div class="scale__track"><div class="scale__fill" style="width:0.6%"></div><span class="scale__val" style="left:0.6%">0,1%</span><span class="scale__chance"></span></div>
+      </div>
+      <div class="scale__axis" aria-hidden="true"><span></span><div><span>0%</span><span>50%, azar</span><span>100%</span></div></div>
+    </div>
+    <figcaption>La línea punteada marca el 50%, lo que se obtendría respondiendo al azar. Fuentes: Nightingale y Farid (2022), para la primera fila; iProov (2025), con 2.000 participantes, para las otras dos.</figcaption>
+  </figure>
+
+  <p>Esta combinación de baja precisión y alta confianza es el mecanismo psicológico que hace posible el sesgo. Si una persona no sabe que fue engañada, no tiene ninguna razón para dudar de su propio conteo.</p>
+  <p>Hay un detalle adicional que muestra hasta qué punto el sesgo está naturalizado: las propias herramientas de alfabetización mediática lo reproducen. El quiz <em>Real or AI</em> de Britannica Education (2024), por ejemplo, enseña a detectar la IA a partir de errores visibles: un Titanic con tres chimeneas en lugar de cuatro, brazos que desaparecen, jeroglíficos que no existen. Son lecciones útiles, pero están construidas con los aviones que regresaron: entrenan para reconocer la IA defectuosa, que es justamente la que menos engaña. Incluso en pruebas públicas como la de Sightengine (s. f.), la mayoría de los participantes acierta entre el 55% y el 75%, lejos de la seguridad que muchos expresan en redes.</p>
+
+  <h2>Cuánta hay realmente</h2>
+  <p>Si la detección falla, la percepción individual no sirve como medida. Se necesitan mediciones externas, y las disponibles no muestran una disminución. Un análisis de la empresa Kapwing (2025) creó una cuenta nueva de YouTube y revisó los primeros 500 Shorts recomendados: 104, es decir el 21%, eran <em>AI slop</em>, contenido de IA de baja calidad producido para acumular vistas. El mismo ejercicio en TikTok dio un 59%: 294 de 500 videos (The Next Web, 2026).</p>
+
+  <figure class="fig wide" aria-labelledby="fig2-t">
+    <p class="fig__title" id="fig2-t">Los primeros 500 videos de una cuenta nueva</p>
+    <div class="waffles">
+      <div class="waffle">
+        <h4>YouTube Shorts <b>104 de 500</b></h4>
+        <div class="waffle__grid" data-on="104" role="img" aria-label="104 de 500 videos clasificados como IA en YouTube Shorts"></div>
+      </div>
+      <div class="waffle">
+        <h4>TikTok <b>294 de 500</b></h4>
+        <div class="waffle__grid" data-on="294" role="img" aria-label="294 de 500 videos clasificados como IA en TikTok"></div>
+      </div>
+    </div>
+    <figcaption>Cada cuadro es un video. En azul, los que Kapwing clasificó como IA porque tenían señales evidentes de haber sido generados. El resto no es necesariamente contenido humano: también puede incluir IA que no se notaba. Fuentes: Kapwing (2025); The Next Web (2026).</figcaption>
+  </figure>
+
+  <p>Estos datos tienen su propio sesgo de supervivencia, y quizá sea este el argumento más fuerte del ensayo. Kapwing solo clasificó como IA el contenido con señales evidentes de haber sido generado artificialmente; todo lo que no se notaba quedó fuera del conteo. Incluso las mediciones que alarman sobre el volumen de IA están contando únicamente los aviones que regresaron. La cifra real es, con toda probabilidad, mayor.</p>
+  <p>Mientras tanto, las herramientas siguen mejorando. El lanzamiento de Sora 2, en 2025, puso al alcance de cualquier usuario la producción de video realista. Una investigación de Aos Fatos, retomada por Chequeado (2025), identificó 64 videos hechos con esa herramienta en TikTok, de los cuales 26 contenían desinformación y sumaban más de 40 millones de visualizaciones.</p>
+
+  <h2>¿Y las etiquetas?</h2>
+  <p>La objeción más seria a esta tesis es que la percepción podría ser correcta por otra razón: las plataformas habrían empezado a identificar y reducir el contenido de IA. Hay hechos que la respaldan. Desde mayo de 2026, YouTube aplica etiquetas automáticas a los videos que detecta como generados por IA, sin esperar a que el creador lo declare (The Next Web, 2026b). Ese mismo año, en agosto, entraron en vigor las obligaciones de transparencia del Reglamento de Inteligencia Artificial de la Unión Europea, que exigen etiquetar el contenido sintético. TikTok, por su parte, ofrece desde noviembre de 2025 controles para que cada usuario reduzca la cantidad de IA en su feed (The Next Web, 2026).</p>
+  <p>Sin embargo, la evidencia sobre el funcionamiento real de estas medidas es débil. Cuando <em>The Washington Post</em> (2025) subió un mismo video generado con IA a ocho plataformas, solo una, YouTube, advirtió que no era real, y lo hizo dentro de una descripción que el usuario debía abrir. Una auditoría de Indicator publicó 516 piezas de IA en cinco plataformas durante tres semanas, y solo 169, algo más del 30%, quedaron correctamente etiquetadas (Mantzarlis y Dutta, 2025).</p>
+
+  <figure class="fig wide" aria-labelledby="fig3-t">
+    <p class="fig__title" id="fig3-t">Un mismo video de IA, ocho plataformas, un aviso</p>
+    <div class="phones" role="img" aria-label="Ocho teléfonos; solo uno muestra un aviso de IA">
+      <div class="phone phone--flagged"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div>
+    </div>
+    <div class="bar516">
+      <div class="bar516__track" role="img" aria-label="169 de 516 publicaciones etiquetadas como IA"><span></span></div>
+      <p>169 de 516 publicaciones de IA quedaron etiquetadas en la auditoría de Indicator</p>
+    </div>
+    <figcaption>Fuentes: The Washington Post (2025), cuya única advertencia fue la de YouTube, escondida en la descripción; Mantzarlis y Dutta (2025), con Instagram, LinkedIn, Pinterest, TikTok y YouTube.</figcaption>
+  </figure>
+
+  <p>Más importante aún, un sistema de etiquetas incompleto puede agravar el sesgo en lugar de corregirlo. Pennycook et al. (2020) describieron el <em>efecto de verdad implícita</em>: cuando solo una parte de los titulares falsos lleva una advertencia, los que no la llevan se perciben como verificados y, por lo tanto, más creíbles. Aplicado a la IA, si el usuario aprende que lo que es IA tiene etiqueta, todo lo que escapa al etiquetado gana credibilidad automáticamente. En ese escenario, la etiqueta no elimina el problema: lo desplaza hacia el contenido que no se detecta, que es justamente el que describe este ensayo.</p>
+  <p>Una segunda objeción es que los usuarios sencillamente se han vuelto mejores para detectar la IA. La experiencia individual no permite comprobarlo, porque nadie puede contar los engaños de los que no se enteró, y la evidencia experimental revisada apunta en la dirección contraria.</p>
+
+  <h2>Cuando todo puede ser falso</h2>
+  <p>El sesgo de supervivencia no es solo un error de conteo; tiene consecuencias para la vida pública. La primera es evidente: quien cree que ya no ve IA baja la guardia frente a la que sí está viendo. La segunda es menos obvia, y Chesney y Citron (2019) la describieron con el nombre de <em>dividendo del mentiroso</em>: a medida que el público sabe que cualquier imagen o audio puede ser falso, quienes son captados en evidencia auténtica pueden descartarla como un montaje.</p>
+  <p>El sesgo empuja, así, en dos direcciones a la vez. Hace creer que lo falso es real cuando no se detecta, y facilita que lo real se descarte como falso cuando conviene. En ambos casos, el criterio de verdad deja de ser la evidencia y pasa a ser la intuición de cada usuario, que, como se vio, es poco confiable.</p>
+
+  <h2>Conclusión</h2>
+  <p>La afirmación «ya no veo tanto contenido de IA» es, en el mejor de los casos, una afirmación sobre la capacidad de quien la pronuncia, no sobre el estado de las redes. Los datos experimentales muestran que la detección humana está cerca del azar y que la confianza no acompaña a la precisión. Las mediciones de volumen, incluso las más alarmantes, subestiman el fenómeno porque solo cuentan lo evidente. Y las etiquetas, en su estado actual, cubren una fracción pequeña del contenido y pueden reforzar la ilusión de que lo no etiquetado es auténtico.</p>
+  <p>La lección de Wald sigue vigente: la pregunta útil no es dónde están los impactos que se ven, sino dónde estarían los que no se ven. Frente al contenido de IA, esto implica abandonar la detección a simple vista como estrategia principal y trasladar la responsabilidad a sistemas verificables, como los estándares de procedencia del contenido, y a una alfabetización mediática centrada en las fuentes más que en los píxeles. Mientras tanto, ante un feed que parece más limpio, la actitud más honesta es la sospecha. Probablemente no hay menos IA; lo que ocurre es que cada vez más de ella pertenece al grupo de los aviones que no regresaron.</p>
+
+  <section class="refs" aria-labelledby="refs-t">
+    <h2 id="refs-t">Referencias</h2>
+    <ol>
+      <li>Britannica Education. (2024, 13 de febrero). <em>Real or AI quiz: Can you tell the difference?</em> <a href="https://britannicaeducation.com/blog/quiz-real-or-ai/">https://britannicaeducation.com/blog/quiz-real-or-ai/</a></li>
+      <li>Casselman, B. (2016, junio). The legend of Abraham Wald. <em>Feature Column, American Mathematical Society.</em> <a href="https://www.ams.org/samplings/feature-column/fc-2016-06">https://www.ams.org/samplings/feature-column/fc-2016-06</a></li>
+      <li>Chequeado. (2025). <em>Videos generados con Sora 2 desinforman y acumulan más de 40 millones de visualizaciones en TikTok.</em> <a href="https://chequeado.com/investigaciones/videos-generados-con-sora-2-desinforman-y-acumulan-mas-de-40-millones-de-visualizaciones-en-tiktok/">https://chequeado.com/investigaciones/videos-generados-con-sora-2-desinforman-y-acumulan-mas-de-40-millones-de-visualizaciones-en-tiktok/</a></li>
+      <li>Chesney, R. y Citron, D. (2019). Deep fakes: A looming challenge for privacy, democracy, and national security. <em>California Law Review, 107</em>, 1753. <a href="https://doi.org/10.15779/Z38RV0D15J">https://doi.org/10.15779/Z38RV0D15J</a></li>
+      <li>Cooke, D., Edwards, A., Barkoff, S. y Kelly, K. (2025). As good as a coin toss: Human detection of AI-generated content. <em>Communications of the ACM.</em> <a href="https://doi.org/10.1145/3729417">https://doi.org/10.1145/3729417</a></li>
+      <li>iProov. (2025, 12 de febrero). <em>Most consumers can't identify AI-generated fakes.</em> <a href="https://www.iproov.com/?p=17845">https://www.iproov.com/?p=17845</a></li>
+      <li>Kapwing. (2025). <em>AI slop report: The global rise of low-quality AI videos.</em> <a href="https://www.kapwing.com/blog/ai-slop-report-the-global-rise-of-low-quality-ai-videos/">https://www.kapwing.com/blog/ai-slop-report-the-global-rise-of-low-quality-ai-videos/</a></li>
+      <li>Mangel, M. y Samaniego, F. J. (1984). Abraham Wald's work on aircraft survivability. <em>Journal of the American Statistical Association, 79</em>(386), 259–267.</li>
+      <li>Mantzarlis, A. y Dutta, N. (2025, 23 de octubre). Tech platforms promised to label AI content. They're not delivering. <em>Indicator.</em> <a href="https://indicator.media/p/tech-platforms-fail-to-label-ai-content-c2pa-metadata">https://indicator.media/p/tech-platforms-fail-to-label-ai-content-c2pa-metadata</a></li>
+      <li>Miller, E. J., Steward, B. A., Witkower, Z., Sutherland, C. A. M., Krumhuber, E. G. y Dawel, A. (2023). AI hyperrealism: Why AI faces are perceived as more real than human ones. <em>Psychological Science, 34</em>(12), 1390–1403. <a href="https://doi.org/10.1177/09567976231207095">https://doi.org/10.1177/09567976231207095</a></li>
+      <li>Nightingale, S. J. y Farid, H. (2022). AI-synthesized faces are indistinguishable from real faces and more trustworthy. <em>Proceedings of the National Academy of Sciences, 119</em>(8), e2120481119. <a href="https://doi.org/10.1073/pnas.2120481119">https://doi.org/10.1073/pnas.2120481119</a></li>
+      <li>Pennycook, G., Bear, A., Collins, E. T. y Rand, D. G. (2020). The implied truth effect: Attaching warnings to a subset of fake news headlines increases perceived accuracy of headlines without warnings. <em>Management Science, 66</em>(11), 4944–4957. <a href="https://doi.org/10.1287/mnsc.2019.3478">https://doi.org/10.1287/mnsc.2019.3478</a></li>
+      <li>Queen Mary University of London. (2025). <em>AI-generated voices now indistinguishable from real human voices.</em> <a href="https://www.qmul.ac.uk/media/news/2025/science-and-engineering/se/ai-generated-voices-now-indistinguishable-from-real-human-voices.html">https://www.qmul.ac.uk/media/news/2025/science-and-engineering/se/ai-generated-voices-now-indistinguishable-from-real-human-voices.html</a></li>
+      <li>RationalWiki. (s. f.). <em>Toupée fallacy.</em> <a href="https://rationalwiki.org/wiki/Toupee_fallacy">https://rationalwiki.org/wiki/Toupee_fallacy</a></li>
+      <li>RocketJump Film School. (2015). <em>Why CGI sucks (except it doesn't)</em> [Video]. YouTube.</li>
+      <li>Sightengine. (s. f.). <em>AI or not: Can you tell the difference between AI-generated videos and real videos?</em> <a href="https://sightengine.com/ai-or-not-video">https://sightengine.com/ai-or-not-video</a></li>
+      <li>Taleb, N. N. (2008). <em>El cisne negro: el impacto de lo altamente improbable.</em> Paidós.</li>
+      <li>The Conversation. (2016). <em>Friday essay: Star Wars, Mad Max and the 'real' vs digital effects furphy.</em> <a href="https://theconversation.com/friday-essay-star-wars-mad-max-and-the-real-vs-digital-effects-furphy-56137">https://theconversation.com/friday-essay-star-wars-mad-max-and-the-real-vs-digital-effects-furphy-56137</a></li>
+      <li>The Next Web. (2026). <em>Nearly 60% of TikTok videos shown to new users are AI slop, study finds.</em> <a href="https://thenextweb.com/news/tiktok-ai-slop-59-percent-new-users-kapwing-study">https://thenextweb.com/news/tiktok-ai-slop-59-percent-new-users-kapwing-study</a></li>
+      <li>The Next Web. (2026b). <em>YouTube will now automatically label AI-generated videos, whether creators disclose them or not.</em> <a href="https://thenextweb.com/news/youtube-will-now-automatically-label-ai-generated-videos-whether-creators-disclose-them-or-not">https://thenextweb.com/news/youtube-will-now-automatically-label-ai-generated-videos-whether-creators-disclose-them-or-not</a></li>
+      <li>The Washington Post. (2025, 22 de octubre). <em>We uploaded a fake video to 8 social apps. Only one told users it wasn't real.</em> <a href="https://www.washingtonpost.com/technology/2025/10/22/ai-deepfake-sora-platforms-c2pa/">https://www.washingtonpost.com/technology/2025/10/22/ai-deepfake-sora-platforms-c2pa/</a></li>
+    </ol>
+    <p><strong>Material de la prueba interactiva.</strong> Las imágenes y el video de la prueba se cargan directamente desde sus fuentes originales y no se reproducen en este sitio: Britannica Education (2024), con fotografías de Adobe Stock y de la Biblioteca del Congreso de EE. UU., y Sightengine (s. f.). El crédito de cada pieza aparece junto a su respuesta.</p>
+  </section>
+</article>
+
+</main>
+
+<footer class="colophon">
+  <div class="colophon__inner">
+    <span><strong>Lo que no regresó</strong>, de Santiago Casasbuenas</span>
+    <span>Ilustración del avión y gráficos: elaboración propia</span>
+  </div>
+</footer>
+
+<script src="js/quiz-data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
