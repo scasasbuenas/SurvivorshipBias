@@ -569,8 +569,10 @@ a:hover { text-decoration-thickness: 2px; }
   .hero { grid-template-rows: minmax(0, 1fr) auto; }
   .hero__body { display: flex; flex-direction: column; gap: 1.25rem; min-height: 0; padding: 3.25rem 0 1rem; }
   .hero__dek { margin-top: 1.1rem; font-size: 1.1rem; line-height: 1.45; }
-  .hero__figure { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
-  .hero__figure svg { width: auto; height: 100%; max-width: 100%; max-height: 100%; }
+  /* El avión ocupa el espacio que sobra. Se posiciona en absoluto dentro de la
+     figura para que Safari (iOS) le dé un tamaño definido y no lo dibuje gigante. */
+  .hero__figure { flex: 1 1 auto; min-height: 7rem; position: relative; align-self: stretch; width: 100%; }
+  .hero__figure svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
   .hero__foot { padding: 0.9rem 0 1rem; font-size: 0.98rem; }
 }
 @media (max-width: 52rem) {
