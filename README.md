@@ -14,7 +14,7 @@ Sitio: https://scasasbuenas.github.io/SurvivorshipBias/
 
 ## Cómo se lee
 
-1. Portada.
+1. Inicio guiado por scroll: aparece "Ya no veo tanto contenido hecho por IA.", se tacha en rojo, aparece "Ya no reconozco el contenido hecho por IA." y ambas frases se acomodan en la portada.
 2. La prueba de ocho piezas, directamente. Cada pieza avanza sola al elegir la respuesta y la confianza.
 3. Resultados y respuestas.
 4. Al seguir bajando aparece el ensayo. Todo cambia con el scroll: los párrafos entran al llegar a ellos, el avión de la sección de Wald se transforma párrafo a párrafo y los gráficos se dibujan (o se deshacen) según cuánto se baja.

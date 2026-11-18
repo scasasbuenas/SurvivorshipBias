@@ -207,6 +207,93 @@
     onScroll();
   }
 
+
+  /* ------------------------------------------------------------
+     Inicio guiado por scroll
+     1. Solo la frase "Ya no veo tanto contenido hecho por IA.", centrada.
+     2. Se tacha en rojo, de izquierda a derecha.
+     3. Aparece "Ya no reconozco el contenido hecho por IA."
+     4. Las dos frases se desplazan a su lugar en la portada y aparece
+        el resto (descripción, avión, firma). Luego sigue la prueba.
+  ------------------------------------------------------------ */
+  var introEl = document.getElementById("intro");
+  var heroEl = document.getElementById("inicio");
+  var claimEl = document.getElementById("claim");
+  var M = null;
+
+  function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function seg(p, a, b) { return clamp((p - a) / (b - a)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function textBox(span) {
+    // ancho real de los renglones (el bloque ocupa toda la columna)
+    var rects = span.getClientRects(), l = Infinity, r = -Infinity, t = Infinity, b = -Infinity;
+    for (var i = 0; i < rects.length; i++) {
+      l = Math.min(l, rects[i].left); r = Math.max(r, rects[i].right);
+      t = Math.min(t, rects[i].top); b = Math.max(b, rects[i].bottom);
+    }
+    return { l: l, r: r, t: t, b: b };
+  }
+
+  function measureIntro() {
+    if (!claimEl) return;
+    claimEl.style.transform = "none";
+    var R = claimEl.getBoundingClientRect();
+    var o = textBox(claimEl.querySelector(".claim__old .claim__text"));
+    var n = textBox(claimEl.querySelector(".claim__new .claim__text"));
+    var vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    var oldW = o.r - R.left, bothW = Math.max(o.r, n.r) - R.left;
+    var s = Math.max(1, Math.min(1.3, (vw * 0.84) / bothW));
+    function centerOn(x0, x1, y0, y1) {
+      // traslación para que el rectángulo (en coordenadas del bloque) quede centrado con escala s
+      var cx = R.left + s * ((x0 + x1) / 2 - R.left), cy = R.top + s * ((y0 + y1) / 2 - R.top);
+      return { x: vw / 2 - cx, y: vh / 2 - cy };
+    }
+    M = {
+      s: s,
+      A: centerOn(R.left, R.left + oldW, o.t, o.b),
+      B: centerOn(R.left, R.left + bothW, o.t, n.b)
+    };
+  }
+
+  function updateIntro() {
+    if (!introEl || !claimEl) return;
+    if (reduceMotion) {
+      heroEl.style.setProperty("--strike", 1); heroEl.style.setProperty("--new", 1);
+      heroEl.style.setProperty("--reveal", 1); heroEl.style.setProperty("--cue", 0);
+      claimEl.style.transform = "none";
+      return;
+    }
+    if (!M) measureIntro();
+    var total = introEl.offsetHeight - window.innerHeight;
+    var p = total > 0 ? clamp(-introEl.getBoundingClientRect().top / total) : 1;
+
+    var strike = ease(seg(p, 0.05, 0.28));
+    var newIn = ease(seg(p, 0.32, 0.46));
+    var settle = ease(seg(p, 0.54, 0.82));
+    var reveal = ease(seg(p, 0.66, 0.9));
+
+    heroEl.style.setProperty("--strike", strike.toFixed(4));
+    heroEl.style.setProperty("--new", newIn.toFixed(3));
+    heroEl.style.setProperty("--reveal", reveal.toFixed(3));
+    heroEl.style.setProperty("--cue", (1 - seg(p, 0, 0.05)).toFixed(3));
+    // el texto tachado pasa de blanco a gris a medida que se tacha
+    claimEl.style.setProperty("--old-color", strike > 0.98 ? "var(--trazo-2)" : "color-mix(in srgb, var(--trazo) " + Math.round((1 - strike) * 100) + "%, var(--trazo-2))");
+
+    var a = M.A, b = M.B;
+    var x = lerp(a.x, b.x, newIn), y = lerp(a.y, b.y, newIn);
+    x = lerp(x, 0, settle); y = lerp(y, 0, settle);
+    var sc = lerp(M.s, 1, settle);
+    claimEl.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) scale(" + sc.toFixed(4) + ")";
+  }
+
+  var introTick = false;
+  function onIntroScroll() {
+    if (introTick) return;
+    introTick = true;
+    requestAnimationFrame(function () { introTick = false; updateIntro(); });
+  }
+
   /* ------------------------------------------------------------
      Prueba
   ------------------------------------------------------------ */
@@ -471,6 +558,11 @@
   }
 
   function init() {
+    measureIntro();
+    updateIntro();
+    window.addEventListener("scroll", onIntroScroll, { passive: true });
+    window.addEventListener("resize", function () { M = null; onIntroScroll(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { M = null; updateIntro(); });
     preloadQuiz();
     drawHeroHits();
     drawWaffles();

@@ -145,20 +145,21 @@ a:hover { text-decoration-thickness: 2px; }
   letter-spacing: -0.012em;
   margin: 0;
 }
+.claim { transform-origin: 0 0; }
 .claim__old, .claim__new { display: block; }
-.claim__old { color: var(--trazo-2); }
-.strike {
+.claim__old { position: relative; color: var(--old-color, var(--trazo-2)); }
+/* La línea roja va encima del texto: es una copia transparente del texto,
+   superpuesta, cuyo fondo es la línea. Así tacha también si hay dos renglones. */
+.claim__strike { position: absolute; inset: 0; color: transparent; pointer-events: none; }
+.claim__strike span {
   background-image: linear-gradient(var(--rojo), var(--rojo));
   background-repeat: no-repeat;
   background-position: 0 58%;
-  background-size: 100% 0.07em;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  background-size: calc(var(--strike, 1) * 100%) 0.075em;
 }
-.claim__new { margin-top: 0.14em; }
+.claim__new { margin-top: 0.14em; opacity: var(--new, 1); }
 
 .hero__dek { margin: 2rem 0 0; max-width: 28rem; font-size: var(--step-1); line-height: 1.45; }
-.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.25rem; }
 
 .hero__foot {
   grid-column: 2;
@@ -179,14 +180,20 @@ a:hover { text-decoration-thickness: 2px; }
   .hero__body { grid-template-columns: 1fr; padding-top: 4rem; }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .js .claim__old { animation: rise 0.7s 0.1s both cubic-bezier(.2,.7,.2,1); }
-  .js .claim__old .strike { animation: strike 0.7s 1.1s both cubic-bezier(.6,0,.2,1); }
-  .js .claim__new { animation: rise 0.7s 1.75s both cubic-bezier(.2,.7,.2,1); }
-  .js .hero__dek, .js .hero__actions { animation: fade 0.8s 2.35s both; }
+/* Inicio guiado por scroll: la portada queda fija mientras se recorre .intro */
+.js .intro { height: 340vh; }
+.js .hero { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 0; }
+.js .hero__dek, .js .hero__figure, .js .hero__foot { opacity: var(--reveal, 1); }
+.hero__cue {
+  position: absolute; left: 50%; bottom: 1.75rem; transform: translateX(-50%);
+  margin: 0; font-family: var(--cond); font-weight: 500; font-size: 1.05rem; color: var(--trazo-2);
+  opacity: var(--cue, 0); pointer-events: none; text-align: center;
 }
-@keyframes rise { from { opacity: 0; transform: translateY(0.25em); } to { opacity: 1; transform: none; } }
-@keyframes strike { from { background-size: 0% 0.07em; } to { background-size: 100% 0.07em; } }
+.hero__cue::after { content: ""; display: block; width: 1px; height: 2.5rem; margin: 0.6rem auto 0; background: linear-gradient(var(--trazo-2), transparent); }
+@media (prefers-reduced-motion: reduce) {
+  .js .intro { height: auto; }
+  .js .hero { position: relative; height: auto; min-height: 100svh; }
+}
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---------- Avión y números de referencia ---------- */
