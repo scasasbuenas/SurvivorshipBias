@@ -232,28 +232,67 @@
     return n;
   }
 
+  function fallbackFor(item) {
+    var fb = el("div", { "class": "frame__fallback" });
+    fb.appendChild(document.createTextNode("Esta pieza no cargó desde su fuente original. "));
+    fb.appendChild(el("a", { href: item.source, target: "_blank", rel: "noopener", text: "Verla en la fuente" }));
+    return fb;
+  }
+
   function mediaFor(item, opts) {
     opts = opts || {};
     var wrap = document.createDocumentFragment();
     var node;
     if (item.type === "video") {
-      node = el("video", { src: item.src, muted: "", loop: "", playsinline: "", preload: "auto", "aria-label": item.alt || "Video" });
+      node = el("video", { src: item.src, muted: "", loop: "", playsinline: "", preload: opts.thumb ? "metadata" : "auto", "aria-label": item.alt || "Video" });
       node.muted = true;
       if (!opts.thumb && !reduceMotion) node.autoplay = true;
-      if (opts.thumb) node.setAttribute("preload", "metadata");
       if (reduceMotion && !opts.thumb) node.setAttribute("controls", "");
     } else {
       node = el("img", { src: item.src, alt: item.alt || "", decoding: "async", referrerpolicy: "no-referrer" });
       if (opts.thumb) node.setAttribute("loading", "lazy");
+      else node.setAttribute("fetchpriority", "high");
     }
-    node.addEventListener("error", function () {
-      var fb = el("div", { "class": "frame__fallback" });
-      fb.appendChild(document.createTextNode("Esta pieza no cargó desde su fuente original. "));
-      fb.appendChild(el("a", { href: item.source, target: "_blank", rel: "noopener", text: "Verla en la fuente" }));
-      if (node.parentNode) node.parentNode.replaceChild(fb, node);
-    });
+    var done = false;
+    function ready() {
+      if (done) return;
+      done = true;
+      node.classList.add("is-loaded");
+      if (node.parentNode) node.parentNode.classList.remove("is-loading");
+    }
+    function fail() {
+      if (done) return;
+      done = true;
+      var parent = node.parentNode;
+      if (parent) { parent.classList.remove("is-loading"); parent.replaceChild(fallbackFor(item), node); }
+    }
+    node.addEventListener(item.type === "video" ? "loadeddata" : "load", ready);
+    node.addEventListener("error", fail);
+    // Si ya estaba en caché (precargada), mostrarla de una vez
+    if (item.type !== "video" && node.complete && node.naturalWidth) setTimeout(ready, 0);
+    if (!opts.thumb) setTimeout(function () { if (!done && node.parentNode) node.parentNode.classList.add("is-slow"); }, 6000);
     wrap.appendChild(node);
     return wrap;
+  }
+
+  /* Precarga de todas las piezas apenas abre la página, para que no se
+     note la espera al pasar de una a otra. */
+  var preloaded = [];
+  function preloadQuiz() {
+    items.forEach(function (it, k) {
+      if (it.type === "video") {
+        var v = document.createElement("video");
+        v.preload = "auto"; v.muted = true; v.src = it.src;
+        preloaded.push(v);
+      } else {
+        var im = new Image();
+        im.referrerPolicy = "no-referrer";
+        im.decoding = "async";
+        if (k < 2 && "fetchPriority" in im) im.fetchPriority = "high";
+        im.src = it.src;
+        preloaded.push(im);
+      }
+    });
   }
 
   function renderItem(moveFocus) {
@@ -266,7 +305,8 @@
       dots.appendChild(el("span", { "class": k < state.i ? "is-done" : (k === state.i ? "is-current" : "") }));
     });
 
-    var box = el("div", { "class": "frame" });
+    var box = el("div", { "class": "frame is-loading" });
+    box.appendChild(el("span", { "class": "frame__loading", "aria-hidden": "true", text: "Cargando la pieza" }));
     box.appendChild(mediaFor(item));
     var frame = el("figure", { "class": "frame-wrap" }, [box, el("figcaption", { "class": "fig-label", text: "FIG. 2." + (state.i + 1) })]);
 
@@ -411,7 +451,7 @@
     items.forEach(function (it, k) {
       var a = state.answers[k];
       var ok = a.choice === it.answer;
-      var thumb = el("div", { "class": "reveal__thumb" });
+      var thumb = el("div", { "class": "reveal__thumb is-loading" });
       thumb.appendChild(mediaFor(it, { thumb: true }));
       list.appendChild(el("li", { "class": "reveal__item" }, [
         thumb,
@@ -430,7 +470,8 @@
     root.appendChild(el("p", { "class": "scroll-cue", text: "Sigue bajando: lo que acabas de vivir tiene nombre." }));
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+  function init() {
+    preloadQuiz();
     drawHeroHits();
     drawWaffles();
     buildScrolly();
@@ -447,5 +488,7 @@
     if (session.done) showEssay();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 })();

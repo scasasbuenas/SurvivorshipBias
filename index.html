@@ -11,7 +11,7 @@
   <meta name="theme-color" content="#121417">
   <link rel="preload" href="assets/fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/source-serif-4-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=202611181531">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23121417'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23e0313a'/%3E%3C/svg%3E">
   <script>document.documentElement.classList.add('js');</script>
 </head>
@@ -71,8 +71,8 @@
   <p>Para sustentarlo, se revisa primero el concepto de sesgo de supervivencia y dos falacias emparentadas con él. Después se examina la evidencia experimental sobre la capacidad humana de distinguir contenido sintético y los datos disponibles sobre el volumen de IA en las plataformas. Finalmente, se discute el principal contraargumento, que las plataformas ya etiquetan este contenido, y las consecuencias de este sesgo para la confianza pública.</p>
   </section>
 
-  <section class="chapter" id="cap-2" aria-labelledby="cap-2-t" data-title="El avión que sí volvió">
-  <h2 id="cap-2-t" tabindex="-1">El avión que sí volvió</h2>
+  <section class="chapter chapter--scrolly" id="cap-2" aria-labelledby="cap-2-t" data-title="El avión que sí volvió">
+    <h2 id="cap-2-t" tabindex="-1">El avión que sí volvió</h2>
     <div class="scrolly">
       <figure class="scrolly__fig" aria-labelledby="scrolly-cap">
         <svg id="scrolly-plane" data-step="0" viewBox="-20 -60 1000 830" role="img" aria-label="El diagrama del bombardero. Los impactos aparecen a medida que se avanza en la lectura.">
@@ -123,7 +123,6 @@
   <p>El problema no se limita a los rostros. Cooke et al. (2025) evaluaron a 1.276 personas con imágenes, audio, video y material audiovisual, en condiciones que imitaban una plataforma en línea, y encontraron un desempeño promedio cercano al azar. La precisión empeoraba precisamente cuando el estímulo contenía material sintético. En el caso de la voz, un equipo de Queen Mary University of London encontró que los clones de voz se confundían con voces reales en el 58% de los casos (Queen Mary University of London, 2025). Y en un estudio de la empresa iProov (2025) con 2.000 personas, solo el 0,1% identificó correctamente todos los estímulos, aunque más del 60% confiaba en su capacidad para detectarlos.</p>
 
   <figure class="fig wide" aria-labelledby="fig1-t">
-    <p class="fig-label">FIG. 4</p>
     <p class="fig__title" id="fig1-t">Acertar no es lo mismo que sentirse seguro</p>
     <div class="scale" role="img" aria-label="Rostros: 48 por ciento de acierto, por debajo del 50 por ciento del azar. iProov: más del 60 por ciento confiaba en su capacidad; solo el 0,1 por ciento acertó todas las piezas.">
       <div class="scale__row">
@@ -140,6 +139,7 @@
       </div>
       <div class="scale__axis" aria-hidden="true"><span></span><div><span>0%</span><span>50%, azar</span><span>100%</span></div></div>
     </div>
+    <p class="fig-label">FIG. 4</p>
     <figcaption>La línea punteada roja marca el 50%, lo que se obtendría respondiendo al azar. Fuentes: Nightingale y Farid (2022), para la primera fila; iProov (2025), con 2.000 participantes, para las otras dos.</figcaption>
   </figure>
 
@@ -152,7 +152,6 @@
   <p>Si la detección falla, la percepción individual no sirve como medida. Se necesitan mediciones externas, y las disponibles no muestran una disminución. Un análisis de la empresa Kapwing (2025) creó una cuenta nueva de YouTube y revisó los primeros 500 Shorts recomendados: 104, es decir el 21%, eran <em>AI slop</em>, contenido de IA de baja calidad producido para acumular vistas. El mismo ejercicio en TikTok dio un 59%: 294 de 500 videos (The Next Web, 2026).</p>
 
   <figure class="fig wide" aria-labelledby="fig2-t">
-    <p class="fig-label">FIG. 5</p>
     <p class="fig__title" id="fig2-t">Los primeros 500 videos de una cuenta nueva</p>
     <div class="waffles">
       <div class="waffle">
@@ -164,6 +163,7 @@
         <div class="waffle__grid" data-on="294" role="img" aria-label="294 de 500 videos clasificados como IA en TikTok"></div>
       </div>
     </div>
+    <p class="fig-label">FIG. 5</p>
     <figcaption>Cada círculo es un video. En rojo, los que Kapwing clasificó como IA porque tenían señales evidentes de haber sido generados. El resto no es necesariamente contenido humano: también puede incluir IA que no se notaba. Fuentes: Kapwing (2025); The Next Web (2026).</figcaption>
   </figure>
 
@@ -177,7 +177,6 @@
   <p>Sin embargo, la evidencia sobre el funcionamiento real de estas medidas es débil. Cuando <em>The Washington Post</em> (2025) subió un mismo video generado con IA a ocho plataformas, solo una, YouTube, advirtió que no era real, y lo hizo dentro de una descripción que el usuario debía abrir. Una auditoría de Indicator publicó 516 piezas de IA en cinco plataformas durante tres semanas, y solo 169, algo más del 30%, quedaron correctamente etiquetadas (Mantzarlis y Dutta, 2025).</p>
 
   <figure class="fig wide" aria-labelledby="fig3-t">
-    <p class="fig-label">FIG. 6</p>
     <p class="fig__title" id="fig3-t">Un mismo video de IA, ocho plataformas, un aviso</p>
     <div class="phones" role="img" aria-label="Ocho teléfonos; solo uno muestra un aviso de IA">
       <div class="phone phone--flagged"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div><div class="phone"></div>
@@ -186,6 +185,7 @@
       <div class="bar516__track" role="img" aria-label="169 de 516 publicaciones etiquetadas como IA"><span></span></div>
       <p>169 de 516 publicaciones de IA quedaron etiquetadas en la auditoría de Indicator</p>
     </div>
+    <p class="fig-label">FIG. 6</p>
     <figcaption>Fuentes: The Washington Post (2025), cuya única advertencia fue la de YouTube, escondida en la descripción; Mantzarlis y Dutta (2025), con Instagram, LinkedIn, Pinterest, TikTok y YouTube.</figcaption>
   </figure>
 
@@ -243,8 +243,8 @@
   </div>
 </footer>
 
-<script src="js/plane-data.js"></script>
-<script src="js/quiz-data.js"></script>
-<script src="js/main.js"></script>
+<script src="js/plane-data.js?v=202611181531"></script>
+<script src="js/quiz-data.js?v=202611181531"></script>
+<script src="js/main.js?v=202611181531"></script>
 </body>
 </html>
