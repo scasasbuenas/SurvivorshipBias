@@ -562,3 +562,40 @@ a:hover { text-decoration-thickness: 2px; }
 @keyframes blink { 50% { opacity: 0.35; } }
 .frame img, .frame video, .reveal__thumb img, .reveal__thumb video { opacity: 0; transition: opacity 0.35s ease; }
 .frame img.is-loaded, .frame video.is-loaded, .reveal__thumb img.is-loaded, .reveal__thumb video.is-loaded { opacity: 1; }
+
+/* ---------- Celular ---------- */
+@media (max-width: 56rem) {
+  :root { --step-3: clamp(2.15rem, 1.1rem + 4.6vw, 3.4rem); }
+  .hero { grid-template-rows: minmax(0, 1fr) auto; }
+  .hero__body { display: flex; flex-direction: column; gap: 1.25rem; min-height: 0; padding: 3.25rem 0 1rem; }
+  .hero__dek { margin-top: 1.1rem; font-size: 1.1rem; line-height: 1.45; }
+  .hero__figure { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
+  .hero__figure svg { width: auto; height: 100%; max-width: 100%; max-height: 100%; }
+  .hero__foot { padding: 0.9rem 0 1rem; font-size: 0.98rem; }
+}
+@media (max-width: 52rem) {
+  .quiz { padding: 2.25rem 1.25rem 3.5rem; }
+  .progress { font-size: 1rem; gap: 0.6rem; margin-bottom: 0.9rem; align-items: flex-start; }
+  .progress__dots { padding-top: 0.45rem; flex-shrink: 0; }
+  .stage { gap: 1.1rem; }
+  .panel { gap: 1.1rem; }
+  .question { font-size: 1.3rem; }
+  .frame-wrap .fig-label { margin-top: 0.4rem; font-size: 1.1rem; }
+  .choice button { padding: 0.8rem 0.5rem 0.75rem; font-size: 1.15rem; }
+  .confidence-label { margin-bottom: 0.4rem; font-size: 1.05rem; }
+  .confidence button { padding: 0.75rem 0.2rem 0.7rem; font-size: 1rem; }
+  .results { gap: 1.25rem; }
+  .reveal { margin-top: 2.75rem; }
+  .reveal__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 0.9rem; }
+  .reveal__verdict { font-size: 1.05rem; flex-direction: column; gap: 0; }
+  .essay { padding: 4rem 0 3.5rem; }
+  .chapter + .chapter { margin-top: 4rem; }
+  .fig { margin: 2.5rem 0 2.75rem; }
+  .phones { gap: 0.45rem; }
+}
+@media (max-width: 63.99rem) {
+  .scrolly__fig svg { max-height: 26vh; }
+  .scrolly__fig figcaption { gap: 0.1rem; margin-top: 0.25rem; }
+  .scrolly__fig .fig-label { font-size: 1.05rem; }
+  .scrolly__cap { min-height: 0; }
+}

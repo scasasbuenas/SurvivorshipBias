@@ -432,7 +432,7 @@
 
     var stage = el("div", { "class": "stage" }, [frame, panel]);
     root.appendChild(el("h2", { "class": "visually-hidden", text: "Prueba: pieza " + (state.i + 1) }));
-    root.appendChild(el("p", { "class": "progress" }, [dots, el("span", { text: "Pieza " + (state.i + 1) + " de " + items.length + ". Algunas son reales y otras fueron generadas con IA." })]));
+    root.appendChild(el("p", { "class": "progress" }, [dots, el("span", { text: "Pieza " + (state.i + 1) + " de " + items.length + (state.i === 0 ? ". Algunas son reales y otras fueron generadas con IA." : "") })]));
     root.appendChild(stage);
     if (moveFocus) {
       btnReal.focus({ preventScroll: true });
