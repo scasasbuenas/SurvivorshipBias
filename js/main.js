@@ -236,21 +236,27 @@
   }
 
   function measureIntro() {
-    if (!claimEl) return;
+    if (!claimEl || !heroEl) return;
+    // Todo se mide relativo a la portada (no a la ventana), para que la medida
+    // sea la misma sin importar en qué punto del scroll se tome.
     claimEl.style.transform = "none";
-    var R = claimEl.getBoundingClientRect();
-    var o = textBox(claimEl.querySelector(".claim__old .claim__text"));
-    var n = textBox(claimEl.querySelector(".claim__new .claim__text"));
-    var vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    var H = heroEl.getBoundingClientRect();
+    var R0 = claimEl.getBoundingClientRect();
+    var R = { left: R0.left - H.left, top: R0.top - H.top };
+    function rel(box) { return { l: box.l - H.left, r: box.r - H.left, t: box.t - H.top, b: box.b - H.top }; }
+    var o = rel(textBox(claimEl.querySelector(".claim__old .claim__text")));
+    var n = rel(textBox(claimEl.querySelector(".claim__new .claim__text")));
+    var vw = heroEl.clientWidth, vh = heroEl.clientHeight || window.innerHeight;
     var oldW = o.r - R.left, bothW = Math.max(o.r, n.r) - R.left;
-    var s = Math.max(1, Math.min(1.3, (vw * 0.84) / bothW));
+    var bothH = n.b - o.t;
+    var s = Math.min(1.3, (vw * 0.84) / bothW, (vh * 0.78) / bothH);
     function centerOn(x0, x1, y0, y1) {
-      // traslación para que el rectángulo (en coordenadas del bloque) quede centrado con escala s
       var cx = R.left + s * ((x0 + x1) / 2 - R.left), cy = R.top + s * ((y0 + y1) / 2 - R.top);
       return { x: vw / 2 - cx, y: vh / 2 - cy };
     }
     M = {
       s: s,
+      w: vw,
       A: centerOn(R.left, R.left + oldW, o.t, o.b),
       B: centerOn(R.left, R.left + bothW, o.t, n.b)
     };
@@ -561,7 +567,10 @@
     measureIntro();
     updateIntro();
     window.addEventListener("scroll", onIntroScroll, { passive: true });
-    window.addEventListener("resize", function () { M = null; onIntroScroll(); });
+    window.addEventListener("resize", function () {
+      if (!M || Math.abs(M.w - heroEl.clientWidth) > 1) M = null;
+      onIntroScroll();
+    });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { M = null; updateIntro(); });
     preloadQuiz();
     drawHeroHits();
