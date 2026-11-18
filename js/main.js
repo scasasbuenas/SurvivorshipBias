@@ -53,15 +53,136 @@
   ------------------------------------------------------------ */
   function drawWaffles() {
     document.querySelectorAll(".waffle__grid").forEach(function (grid) {
-      var on = parseInt(grid.getAttribute("data-on"), 10) || 0;
       var frag = document.createDocumentFragment();
-      for (var i = 0; i < 500; i++) {
-        var s = document.createElement("span");
-        if (i < on) s.className = "on";
-        frag.appendChild(s);
-      }
+      for (var i = 0; i < 500; i++) frag.appendChild(document.createElement("span"));
       grid.appendChild(frag);
     });
+  }
+
+  function fillWaffle(grid) {
+    if (grid.dataset.filled) return;
+    grid.dataset.filled = "1";
+    var on = parseInt(grid.getAttribute("data-on"), 10) || 0;
+    var cells = grid.children;
+    if (reduceMotion) { for (var k = 0; k < on; k++) cells[k].className = "on"; return; }
+    var i = 0, perFrame = Math.max(2, Math.ceil(on / 60));
+    (function step() {
+      for (var n = 0; n < perFrame && i < on; n++, i++) cells[i].className = "on";
+      if (i < on) requestAnimationFrame(step);
+    })();
+  }
+
+  /* Los gráficos se dibujan cuando entran en pantalla */
+  function watchFigures() {
+    var figs = document.querySelectorAll(".essay .fig");
+    function show(f) {
+      f.classList.add("in-view");
+      f.querySelectorAll(".waffle__grid").forEach(fillWaffle);
+    }
+    if (!("IntersectionObserver" in window)) { figs.forEach(show); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.35 });
+    figs.forEach(function (f) { io.observe(f); });
+  }
+
+  /* ------------------------------------------------------------
+     Ensayo por secciones
+     Cerrado hasta terminar la prueba; luego se abre sección por
+     sección. El avance se guarda solo durante la sesión del navegador.
+  ------------------------------------------------------------ */
+  var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  var reading = { done: false, reached: 0 };
+  try { var saved = JSON.parse(sessionStorage.getItem("lqnr")); if (saved) reading = saved; } catch (e) {}
+  function saveReading() { try { sessionStorage.setItem("lqnr", JSON.stringify(reading)); } catch (e) {} }
+
+  var rail = document.getElementById("rail");
+  var railList = document.getElementById("rail-list");
+  var railLabel = document.getElementById("rail-label");
+  var railButtons = [];
+  var currentIdx = 0;
+
+  function buildRail() {
+    chapters.forEach(function (ch, i) {
+      var b = el("button", { type: "button", "aria-label": (i + 1) + ". " + ch.getAttribute("data-title") });
+      b.addEventListener("click", function () { goTo(i, false); });
+      railButtons.push(b);
+      railList.appendChild(el("li", null, [b]));
+    });
+  }
+  function updateRail() {
+    railButtons.forEach(function (b, i) {
+      b.disabled = i >= reading.reached;
+      b.classList.toggle("is-read", i < reading.reached && i !== currentIdx);
+      b.classList.toggle("is-current", i === currentIdx);
+      if (i === currentIdx) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    });
+    railLabel.innerHTML = "";
+    railLabel.appendChild(document.createTextNode("Sección " + (currentIdx + 1) + " de " + chapters.length + ": "));
+    railLabel.appendChild(el("b", { text: chapters[currentIdx].getAttribute("data-title") }));
+  }
+
+  function nextControl(i) {
+    var next = chapters[i + 1];
+    var btn = el("button", { "class": "btn btn--solid", type: "button", text: "Seguir: " + next.getAttribute("data-title") });
+    btn.addEventListener("click", function () {
+      wrap.parentNode.removeChild(wrap);
+      reveal(i + 1, true);
+    });
+    var wrap = el("div", { "class": "chapter__next" }, [el("span", { text: "Sección " + (i + 1) + " de " + chapters.length + " terminada" }), btn]);
+    return wrap;
+  }
+
+  function reveal(i, animate) {
+    var ch = chapters[i];
+    ch.hidden = false;
+    if (animate) { ch.classList.add("is-entering"); ch.addEventListener("animationend", function () { ch.classList.remove("is-entering"); }, { once: true }); }
+    if (i + 1 < chapters.length && !ch.querySelector(".chapter__next") && i + 1 >= reading.reached) ch.appendChild(nextControl(i));
+    reading.reached = Math.max(reading.reached, i + 1);
+    saveReading();
+    if (animate) goTo(i, true);
+    updateRail();
+  }
+
+  function goTo(i, focus) {
+    var h = chapters[i].querySelector("h2");
+    h.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    if (focus) h.focus({ preventScroll: true });
+  }
+
+  var essayInView = false;
+  function syncRail() {
+    rail.hidden = !reading.done;
+    requestAnimationFrame(function () { rail.classList.toggle("is-shown", reading.done && essayInView); });
+  }
+
+  function openEssay() {
+    document.getElementById("essay-lock").hidden = true;
+    if (!reading.done) { reading.done = true; saveReading(); }
+    for (var i = 0; i < Math.max(1, reading.reached); i++) reveal(i, false);
+    syncRail();
+  }
+
+  function initEssay() {
+    if (!chapters.length) return;
+    chapters.forEach(function (c) { c.hidden = true; });
+    buildRail();
+    if (reading.done) openEssay();
+    else document.getElementById("essay-lock").hidden = false;
+
+    if ("IntersectionObserver" in window) {
+      var essay = document.getElementById("ensayo");
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { essayInView = e.isIntersecting; syncRail(); });
+      }, { rootMargin: "0px 0px -60% 0px" }).observe(essay);
+
+      var cio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { currentIdx = chapters.indexOf(e.target); updateRail(); }
+        });
+      }, { rootMargin: "-35% 0px -60% 0px" });
+      chapters.forEach(function (c) { cio.observe(c); });
+    }
   }
 
   /* ------------------------------------------------------------
@@ -271,10 +392,16 @@
     });
     root.appendChild(el("section", { "class": "reveal", "aria-label": "Respuestas" }, [el("h3", { text: "Las respuestas" }), list]));
 
+    var readBtn = el("button", { "class": "btn btn--solid", type: "button", text: reading.done ? "Volver al ensayo" : "Abrir el ensayo" });
+    readBtn.addEventListener("click", function () {
+      var first = !reading.done;
+      openEssay();
+      goTo(first ? 0 : Math.max(0, reading.reached - 1), true);
+    });
     var again = el("button", { "class": "btn", type: "button", text: "Repetir la prueba" });
     again.addEventListener("click", function () { state = { i: 0, answers: [] }; renderItem(); });
     root.appendChild(el("div", { "class": "results__actions" }, [
-      el("a", { "class": "btn btn--solid", href: "#ensayo", text: "Leer el ensayo" }),
+      readBtn,
       again
     ]));
   }
@@ -282,6 +409,8 @@
   document.addEventListener("DOMContentLoaded", function () {
     drawHeroHits();
     drawWaffles();
+    initEssay();
+    watchFigures();
     var start = document.getElementById("quiz-start");
     if (start && items.length) start.addEventListener("click", function () { renderItem(); });
   });

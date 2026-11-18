@@ -12,6 +12,15 @@ Sitio: https://scasasbuenas.github.io/SurvivorshipBias/
 - `js/main.js`: la prueba, el avión y los gráficos.
 - `assets/fonts/`: fuentes Source Serif 4 y Barlow Condensed (licencia SIL OFL).
 
+## Cómo se lee
+
+1. Portada.
+2. La prueba de ocho piezas. El ensayo está cerrado hasta terminarla.
+3. Resultados y respuestas.
+4. El ensayo se abre sección por sección con el botón "Seguir" al final de cada una. Los gráficos se dibujan al entrar en pantalla.
+
+El avance se guarda solo mientras la pestaña del navegador está abierta. Para empezar de cero (por ejemplo, antes de presentar), cierra la pestaña y abre la página de nuevo.
+
 ## Cambiar las piezas de la prueba
 
 Cada pieza en `js/quiz-data.js` tiene:

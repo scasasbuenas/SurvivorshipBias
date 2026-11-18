@@ -27,7 +27,6 @@
       <p class="hero__dek">Un ensayo sobre el sesgo de supervivencia y la ilusión de que la inteligencia artificial está desapareciendo de las redes sociales.</p>
       <div class="hero__actions">
         <a class="btn btn--solid" href="#prueba">Hacer la prueba</a>
-        <a class="btn" href="#ensayo">Ir al ensayo</a>
       </div>
     </div>
 
@@ -53,6 +52,11 @@
   </div>
 </header>
 
+<nav class="rail" id="rail" aria-label="Progreso de lectura" hidden>
+  <ol class="rail__list" id="rail-list"></ol>
+  <p class="rail__label" id="rail-label" aria-live="polite"></p>
+</nav>
+
 <main>
 
 <section class="quiz" id="prueba" aria-labelledby="prueba-titulo">
@@ -64,23 +68,33 @@
   </div>
 </section>
 
-<article class="essay" id="ensayo">
+<article class="essay" id="ensayo" aria-label="Ensayo">
+  <div class="essay__lock" id="essay-lock" hidden>
+    <p class="fig-label">El ensayo está cerrado</p>
+    <p>Se abre al terminar la prueba. Así lees los datos después de haber vivido el sesgo, no antes.</p>
+    <a class="btn btn--solid" href="#prueba">Ir a la prueba</a>
+  </div>
 
-  <h2>Lo que no regresa</h2>
+  <section class="chapter" id="cap-1" aria-labelledby="cap-1-t" data-title="Lo que no regresa">
+  <h2 id="cap-1-t" tabindex="-1">Lo que no regresa</h2>
   <p>En los últimos meses se ha vuelto frecuente un tipo particular de video en TikTok e Instagram: alguien mira a la cámara y celebra que su feed parece haberse limpiado, que ya no le aparece tanto contenido generado por inteligencia artificial. La afirmación suena razonable y descansa en una experiencia directa. Sin embargo, tiene un problema de fondo: quien la hace solo puede contar la IA que logró reconocer. La que no reconoció quedó registrada como contenido real y, por lo tanto, no entra en la cuenta.</p>
 
   <p class="thesis">Este ensayo sostiene que la sensación de que hay menos contenido de IA en las redes sociales no refleja una disminución real, sino un sesgo de supervivencia: solo se contabiliza la IA que se detecta, y esa fracción es cada vez menor a medida que la tecnología mejora.</p>
 
   <p>Para sustentarlo, se revisa primero el concepto de sesgo de supervivencia y dos falacias emparentadas con él. Después se examina la evidencia experimental sobre la capacidad humana de distinguir contenido sintético y los datos disponibles sobre el volumen de IA en las plataformas. Finalmente, se discute el principal contraargumento, que las plataformas ya etiquetan este contenido, y las consecuencias de este sesgo para la confianza pública.</p>
+  </section>
 
-  <h2>El avión que sí volvió</h2>
+  <section class="chapter" id="cap-2" aria-labelledby="cap-2-t" data-title="El avión que sí volvió">
+  <h2 id="cap-2-t" tabindex="-1">El avión que sí volvió</h2>
   <p>La imagen clásica del sesgo de supervivencia proviene de la Segunda Guerra Mundial. Según el relato más difundido, el ejército estadounidense estudió los bombarderos que regresaban de sus misiones para decidir dónde reforzar el blindaje, y la intuición inicial fue proteger las zonas con más impactos. El estadístico Abraham Wald, del Statistical Research Group de la Universidad de Columbia, propuso lo contrario: reforzar las zonas sin impactos, porque los aviones alcanzados allí eran precisamente los que no habían regresado (Mangel y Samaniego, 1984).</p>
   <p>La FIG. 1 reproduce el diagrama con el que suele explicarse esta historia. Los impactos <span class="ref">(16)</span> se concentran en las alas <span class="ref">(10)</span>, el fuselaje <span class="ref">(14)</span> y la cola <span class="ref">(18)</span>, mientras que los motores <span class="ref">(12)</span> y la cabina aparecen limpios. Leído con ingenuidad, el diagrama dice que los motores son la parte más segura del avión. Leído como lo leyó Wald, dice lo contrario: los aviones con impactos en los motores no volvieron para ser contados.</p>
   <p>Conviene una precisión. Los historiadores de la estadística advierten que existe muy poco material de primera mano sobre lo que Wald dijo exactamente acerca del daño en los aviones, y que buena parte de la anécdota es una reconstrucción plausible (Casselman, 2016). Su valor, sin embargo, no depende del detalle histórico sino de la lógica: cuando una muestra está filtrada por la supervivencia, la ausencia de datos en un lugar no indica ausencia del fenómeno. Puede indicar exactamente lo contrario.</p>
   <p>Nassim Taleb (2008) llama a esto <em>evidencia silenciosa</em>: los casos que no superaron el filtro no dejan rastro y por eso se omiten de las conclusiones. Dos variantes populares del mismo error resultan útiles aquí. La primera es la llamada falacia del peluquín, una forma de sesgo de selección y de supervivencia (RationalWiki, s. f.): la convicción de que todos los peluquines se notan, sostenida por alguien que solo ha visto los que se notan, porque los convincentes pasaron inadvertidos. La segunda viene del cine. Ante la queja recurrente de que los efectos digitales se ven falsos, el ensayo audiovisual de RocketJump Film School (2015) mostró que solo se comenta el CGI evidente, mientras que la gran mayoría de los efectos digitales pasa completamente desapercibida (The Conversation, 2016).</p>
   <p>El caso del contenido de IA tiene exactamente esta estructura. Quien afirma que ya no ve tanta IA está observando los aviones que regresaron: las imágenes con seis dedos, los videos con física imposible, las voces robóticas. A partir de ellos concluye que el problema disminuye. Pero el dato relevante es el que no ve.</p>
+  </section>
 
-  <h2>Ya no se nota</h2>
+  <section class="chapter" id="cap-3" aria-labelledby="cap-3-t" data-title="Ya no se nota">
+  <h2 id="cap-3-t" tabindex="-1">Ya no se nota</h2>
   <p>La pregunta empírica es, entonces, cuánta IA logran detectar las personas. La evidencia experimental de los últimos años apunta a una respuesta incómoda: muy poca, y cada vez menos.</p>
   <p>En el estudio de Nightingale y Farid (2022), publicado en <em>PNAS</em>, 315 participantes clasificaron rostros reales y rostros generados con inteligencia artificial. Su precisión fue del 48%, prácticamente la misma que se obtendría lanzando una moneda. Además, los rostros sintéticos fueron calificados, en promedio, como un 7,7% más confiables que los reales. Miller et al. (2023) fueron más lejos: encontraron que ciertos rostros generados por IA, en particular rostros blancos, sobrerrepresentados en los datos de entrenamiento, eran juzgados como humanos con más frecuencia que los rostros humanos reales. Llamaron a este fenómeno <em>hiperrealismo</em>. Para este ensayo, sin embargo, su hallazgo más importante es otro: los participantes que más se equivocaban eran también los más seguros de sus respuestas.</p>
   <p>El problema no se limita a los rostros. Cooke et al. (2025) evaluaron a 1.276 personas con imágenes, audio, video y material audiovisual, en condiciones que imitaban una plataforma en línea, y encontraron un desempeño promedio cercano al azar. La precisión empeoraba precisamente cuando el estímulo contenía material sintético. En el caso de la voz, un equipo de Queen Mary University of London encontró que los clones de voz se confundían con voces reales en el 58% de los casos (Queen Mary University of London, 2025). Y en un estudio de la empresa iProov (2025) con 2.000 personas, solo el 0,1% identificó correctamente todos los estímulos, aunque más del 60% confiaba en su capacidad para detectarlos.</p>
@@ -108,8 +122,10 @@
 
   <p>Esta combinación de baja precisión y alta confianza es el mecanismo psicológico que hace posible el sesgo. Si una persona no sabe que fue engañada, no tiene ninguna razón para dudar de su propio conteo.</p>
   <p>Hay un detalle adicional que muestra hasta qué punto el sesgo está naturalizado: las propias herramientas de alfabetización mediática lo reproducen. El quiz <em>Real or AI</em> de Britannica Education (2024), por ejemplo, enseña a detectar la IA a partir de errores visibles: un Titanic con tres chimeneas en lugar de cuatro, brazos que desaparecen, jeroglíficos que no existen. Son lecciones útiles, pero están construidas con los aviones que regresaron: entrenan para reconocer la IA defectuosa, que es justamente la que menos engaña. Incluso en pruebas públicas como la de Sightengine (s. f.), la mayoría de los participantes acierta entre el 55% y el 75%, lejos de la seguridad que muchos expresan en redes.</p>
+  </section>
 
-  <h2>Cuánta hay realmente</h2>
+  <section class="chapter" id="cap-4" aria-labelledby="cap-4-t" data-title="Cuánta hay realmente">
+  <h2 id="cap-4-t" tabindex="-1">Cuánta hay realmente</h2>
   <p>Si la detección falla, la percepción individual no sirve como medida. Se necesitan mediciones externas, y las disponibles no muestran una disminución. Un análisis de la empresa Kapwing (2025) creó una cuenta nueva de YouTube y revisó los primeros 500 Shorts recomendados: 104, es decir el 21%, eran <em>AI slop</em>, contenido de IA de baja calidad producido para acumular vistas. El mismo ejercicio en TikTok dio un 59%: 294 de 500 videos (The Next Web, 2026).</p>
 
   <figure class="fig wide" aria-labelledby="fig2-t">
@@ -130,8 +146,10 @@
 
   <p>Estos datos tienen su propio sesgo de supervivencia, y quizá sea este el argumento más fuerte del ensayo. Kapwing solo clasificó como IA el contenido con señales evidentes de haber sido generado artificialmente; todo lo que no se notaba quedó fuera del conteo. Incluso las mediciones que alarman sobre el volumen de IA están contando únicamente los aviones que regresaron. La cifra real es, con toda probabilidad, mayor.</p>
   <p>Mientras tanto, las herramientas siguen mejorando. El lanzamiento de Sora 2, en 2025, puso al alcance de cualquier usuario la producción de video realista. Una investigación de Aos Fatos, retomada por Chequeado (2025), identificó 64 videos hechos con esa herramienta en TikTok, de los cuales 26 contenían desinformación y sumaban más de 40 millones de visualizaciones.</p>
+  </section>
 
-  <h2>¿Y las etiquetas?</h2>
+  <section class="chapter" id="cap-5" aria-labelledby="cap-5-t" data-title="¿Y las etiquetas?">
+  <h2 id="cap-5-t" tabindex="-1">¿Y las etiquetas?</h2>
   <p>La objeción más seria a esta tesis es que la percepción podría ser correcta por otra razón: las plataformas habrían empezado a identificar y reducir el contenido de IA. Hay hechos que la respaldan. Desde mayo de 2026, YouTube aplica etiquetas automáticas a los videos que detecta como generados por IA, sin esperar a que el creador lo declare (The Next Web, 2026b). Además, para agosto de 2026 estaba prevista la entrada en vigor de las obligaciones de transparencia del Reglamento de Inteligencia Artificial de la Unión Europea, que exigen etiquetar el contenido sintético (The Next Web, 2026b). TikTok, por su parte, ofrece desde noviembre de 2025 controles para que cada usuario reduzca la cantidad de IA en su feed (The Next Web, 2026).</p>
   <p>Sin embargo, la evidencia sobre el funcionamiento real de estas medidas es débil. Cuando <em>The Washington Post</em> (2025) subió un mismo video generado con IA a ocho plataformas, solo una, YouTube, advirtió que no era real, y lo hizo dentro de una descripción que el usuario debía abrir. Una auditoría de Indicator publicó 516 piezas de IA en cinco plataformas durante tres semanas, y solo 169, algo más del 30%, quedaron correctamente etiquetadas (Mantzarlis y Dutta, 2025).</p>
 
@@ -150,17 +168,21 @@
 
   <p>Más importante aún, un sistema de etiquetas incompleto puede agravar el sesgo en lugar de corregirlo. Pennycook et al. (2020) describieron el <em>efecto de verdad implícita</em>: cuando solo una parte de los titulares falsos lleva una advertencia, los que no la llevan se perciben como verificados y, por lo tanto, más creíbles. Aplicado a la IA, si el usuario aprende que lo que es IA tiene etiqueta, todo lo que escapa al etiquetado gana credibilidad automáticamente. En ese escenario, la etiqueta no elimina el problema: lo desplaza hacia el contenido que no se detecta, que es justamente el que describe este ensayo.</p>
   <p>Una segunda objeción es que los usuarios sencillamente se han vuelto mejores para detectar la IA. La experiencia individual no permite comprobarlo, porque nadie puede contar los engaños de los que no se enteró, y la evidencia experimental revisada apunta en la dirección contraria.</p>
+  </section>
 
-  <h2>Cuando todo puede ser falso</h2>
+  <section class="chapter" id="cap-6" aria-labelledby="cap-6-t" data-title="Cuando todo puede ser falso">
+  <h2 id="cap-6-t" tabindex="-1">Cuando todo puede ser falso</h2>
   <p>El sesgo de supervivencia no es solo un error de conteo; tiene consecuencias para la vida pública. La primera es evidente: quien cree que ya no ve IA baja la guardia frente a la que sí está viendo. La segunda es menos obvia, y Chesney y Citron (2019) la describieron con el nombre de <em>dividendo del mentiroso</em>: a medida que el público sabe que cualquier imagen o audio puede ser falso, quienes son captados en evidencia auténtica pueden descartarla como un montaje.</p>
   <p>El sesgo empuja, así, en dos direcciones a la vez. Hace creer que lo falso es real cuando no se detecta, y facilita que lo real se descarte como falso cuando conviene. En ambos casos, el criterio de verdad deja de ser la evidencia y pasa a ser la intuición de cada usuario, que, como se vio, es poco confiable.</p>
+  </section>
 
-  <h2>Conclusión</h2>
+  <section class="chapter" id="cap-7" aria-labelledby="cap-7-t" data-title="Conclusión">
+  <h2 id="cap-7-t" tabindex="-1">Conclusión</h2>
   <p>La afirmación «ya no veo tanto contenido de IA» es, en el mejor de los casos, una afirmación sobre la capacidad de quien la pronuncia, no sobre el estado de las redes. Los datos experimentales muestran que la detección humana está cerca del azar y que la confianza no acompaña a la precisión. Las mediciones de volumen, incluso las más alarmantes, subestiman el fenómeno porque solo cuentan lo evidente. Y las etiquetas, en su estado actual, cubren una fracción pequeña del contenido y pueden reforzar la ilusión de que lo no etiquetado es auténtico.</p>
   <p>La lección de Wald sigue vigente: la pregunta útil no es dónde están los impactos que se ven, sino dónde estarían los que no se ven. Frente al contenido de IA, esto implica abandonar la detección a simple vista como estrategia principal y trasladar la responsabilidad a sistemas verificables, como los estándares de procedencia del contenido, y a una alfabetización mediática centrada en las fuentes más que en los píxeles. Mientras tanto, ante un feed que parece más limpio, la actitud más honesta es la sospecha. Probablemente no hay menos IA; lo que ocurre es que cada vez más de ella pertenece al grupo de los aviones que no regresaron.</p>
-
-  <section class="refs" aria-labelledby="refs-t">
-    <h2 id="refs-t">Referencias</h2>
+  </section>
+  <section class="chapter refs" id="cap-8" aria-labelledby="refs-t" data-title="Referencias">
+    <h2 id="refs-t" tabindex="-1">Referencias</h2>
     <ol>
       <li>Britannica Education. (2024, 13 de febrero). <em>Real or AI quiz: Can you tell the difference?</em> <a href="https://britannicaeducation.com/blog/quiz-real-or-ai/">https://britannicaeducation.com/blog/quiz-real-or-ai/</a></li>
       <li>Casselman, B. (2016, junio). The legend of Abraham Wald. <em>Feature Column, American Mathematical Society.</em> <a href="https://www.ams.org/samplings/feature-column/fc-2016-06">https://www.ams.org/samplings/feature-column/fc-2016-06</a></li>
