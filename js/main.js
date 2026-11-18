@@ -49,140 +49,162 @@
   }
 
   /* ------------------------------------------------------------
-     Gráfico de cuadros (waffle)
+     Todo lo que cambia con el scroll
+     - Los bloques del ensayo aparecen al entrar en pantalla.
+     - Los gráficos se dibujan en proporción a cuánto se ha bajado
+       (si se sube, se deshacen).
+     - El avión fijo de la sección de Wald cambia según el párrafo.
   ------------------------------------------------------------ */
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
   function drawWaffles() {
     document.querySelectorAll(".waffle__grid").forEach(function (grid) {
       var frag = document.createDocumentFragment();
       for (var i = 0; i < 500; i++) frag.appendChild(document.createElement("span"));
       grid.appendChild(frag);
+      grid._shown = 0;
     });
   }
 
-  function fillWaffle(grid) {
-    if (grid.dataset.filled) return;
-    grid.dataset.filled = "1";
+  function setWaffle(grid, p) {
     var on = parseInt(grid.getAttribute("data-on"), 10) || 0;
-    var cells = grid.children;
-    if (reduceMotion) { for (var k = 0; k < on; k++) cells[k].className = "on"; return; }
-    var i = 0, perFrame = Math.max(2, Math.ceil(on / 60));
-    (function step() {
-      for (var n = 0; n < perFrame && i < on; n++, i++) cells[i].className = "on";
-      if (i < on) requestAnimationFrame(step);
-    })();
+    var target = Math.round(on * p), cells = grid.children;
+    if (target === grid._shown) return;
+    if (target > grid._shown) for (var i = grid._shown; i < target; i++) cells[i].className = "on";
+    else for (var j = target; j < grid._shown; j++) cells[j].className = "";
+    grid._shown = target;
   }
 
-  /* Los gráficos se dibujan cuando entran en pantalla */
-  function watchFigures() {
-    var figs = document.querySelectorAll(".essay .fig");
-    function show(f) {
-      f.classList.add("in-view");
-      f.querySelectorAll(".waffle__grid").forEach(fillWaffle);
+  function figProgress(f, vh) {
+    var r = f.getBoundingClientRect();
+    // 0 cuando la figura asoma por abajo; 1 cuando su centro llega al 45% de la pantalla
+    return clamp((vh - r.top) / (vh * 0.55 + r.height * 0.5));
+  }
+
+  function updateFigures(vh) {
+    document.querySelectorAll(".essay .fig").forEach(function (f) {
+      var p = reduceMotion ? 1 : figProgress(f, vh);
+      f.querySelectorAll(".scale__row").forEach(function (row, k) {
+        var q = clamp(p * 1.25 - k * 0.12);
+        row.querySelector(".scale__fill").style.transform = "scaleX(" + q + ")";
+        row.querySelector(".scale__val").style.opacity = q > 0.92 ? 1 : 0;
+      });
+      f.querySelectorAll(".waffle__grid").forEach(function (g) { setWaffle(g, p); });
+      var bar = f.querySelector(".bar516__track span");
+      if (bar) bar.style.transform = "scaleX(" + p + ")";
+      f.classList.toggle("is-flagged", p > 0.6);
+    });
+  }
+
+  /* Avión fijo (sección 2) */
+  var SCROLLY_ORDER = [];
+  function buildScrolly() {
+    var svg = document.getElementById("scrolly-plane");
+    if (!svg) return;
+    var g = svg.querySelector(".scrolly-hits");
+    var order = HITS.map(function (h, i) { return i; });
+    // orden pseudoaleatorio fijo, para que los impactos "lleguen" dispersos
+    var seed = 1943;
+    for (var i = order.length - 1; i > 0; i--) {
+      seed = (seed * 1664525 + 1013904223) % 4294967296;
+      var j = Math.floor((seed / 4294967296) * (i + 1)), t = order[i]; order[i] = order[j]; order[j] = t;
     }
-    if (!("IntersectionObserver" in window)) { figs.forEach(show); return; }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
-    }, { threshold: 0.35 });
-    figs.forEach(function (f) { io.observe(f); });
-  }
-
-  /* ------------------------------------------------------------
-     Ensayo por secciones
-     Cerrado hasta terminar la prueba; luego se abre sección por
-     sección. El avance se guarda solo durante la sesión del navegador.
-  ------------------------------------------------------------ */
-  var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
-  var reading = { done: false, reached: 0 };
-  try { var saved = JSON.parse(sessionStorage.getItem("lqnr")); if (saved) reading = saved; } catch (e) {}
-  function saveReading() { try { sessionStorage.setItem("lqnr", JSON.stringify(reading)); } catch (e) {} }
-
-  var rail = document.getElementById("rail");
-  var railList = document.getElementById("rail-list");
-  var railLabel = document.getElementById("rail-label");
-  var railButtons = [];
-  var currentIdx = 0;
-
-  function buildRail() {
-    chapters.forEach(function (ch, i) {
-      var b = el("button", { type: "button", "aria-label": (i + 1) + ". " + ch.getAttribute("data-title") });
-      b.addEventListener("click", function () { goTo(i, false); });
-      railButtons.push(b);
-      railList.appendChild(el("li", null, [b]));
+    order.forEach(function (k) {
+      var c = circle("hit", HITS[k][0], HITS[k][1], 6);
+      c.style.opacity = 0;
+      g.appendChild(c);
+      SCROLLY_ORDER.push(c);
     });
   }
-  function updateRail() {
-    railButtons.forEach(function (b, i) {
-      b.disabled = i >= reading.reached;
-      b.classList.toggle("is-read", i < reading.reached && i !== currentIdx);
-      b.classList.toggle("is-current", i === currentIdx);
-      if (i === currentIdx) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
-    });
-    railLabel.innerHTML = "";
-    railLabel.appendChild(document.createTextNode("Sección " + (currentIdx + 1) + " de " + chapters.length + ": "));
-    railLabel.appendChild(el("b", { text: chapters[currentIdx].getAttribute("data-title") }));
+
+  function updateScrolly(vh) {
+    var wrap = document.querySelector(".scrolly");
+    if (!wrap || !SCROLLY_ORDER.length) return;
+    var steps = wrap.querySelectorAll("p[data-step]");
+    var svg = document.getElementById("scrolly-plane");
+    var active = 0;
+    steps.forEach(function (st, k) { if (st.getBoundingClientRect().top < vh * 0.6) active = k + 1; });
+    var first = steps[0].getBoundingClientRect();
+    var p = reduceMotion ? 1 : clamp((vh * 0.85 - first.top) / (first.height + vh * 0.25));
+    var n = active > 1 ? SCROLLY_ORDER.length : Math.round(SCROLLY_ORDER.length * p);
+    for (var i = 0; i < SCROLLY_ORDER.length; i++) SCROLLY_ORDER[i].style.opacity = i < n ? 1 : 0;
+    svg.setAttribute("data-step", String(active));
+    var cap = document.getElementById("scrolly-cap");
+    if (cap) cap.textContent = cap.getAttribute("data-s" + Math.max(1, active)) || "";
   }
 
-  function nextControl(i) {
-    var next = chapters[i + 1];
-    var btn = el("button", { "class": "btn btn--solid", type: "button", text: "Seguir: " + next.getAttribute("data-title") });
-    btn.addEventListener("click", function () {
-      wrap.parentNode.removeChild(wrap);
-      reveal(i + 1, true);
-    });
-    var wrap = el("div", { "class": "chapter__next" }, [el("span", { text: "Sección " + (i + 1) + " de " + chapters.length + " terminada" }), btn]);
-    return wrap;
-  }
-
-  function reveal(i, animate) {
-    var ch = chapters[i];
-    ch.hidden = false;
-    if (animate) { ch.classList.add("is-entering"); ch.addEventListener("animationend", function () { ch.classList.remove("is-entering"); }, { once: true }); }
-    if (i + 1 < chapters.length && !ch.querySelector(".chapter__next") && i + 1 >= reading.reached) ch.appendChild(nextControl(i));
-    reading.reached = Math.max(reading.reached, i + 1);
-    saveReading();
-    if (animate) goTo(i, true);
-    updateRail();
-  }
-
-  function goTo(i, focus) {
-    var h = chapters[i].querySelector("h2");
-    h.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-    if (focus) h.focus({ preventScroll: true });
-  }
-
-  var essayInView = false;
-  function syncRail() {
-    rail.hidden = !reading.done;
-    requestAnimationFrame(function () { rail.classList.toggle("is-shown", reading.done && essayInView); });
-  }
-
-  function openEssay() {
-    document.getElementById("essay-lock").hidden = true;
-    if (!reading.done) { reading.done = true; saveReading(); }
-    for (var i = 0; i < Math.max(1, reading.reached); i++) reveal(i, false);
-    syncRail();
-  }
-
-  function initEssay() {
-    if (!chapters.length) return;
-    chapters.forEach(function (c) { c.hidden = true; });
-    buildRail();
-    if (reading.done) openEssay();
-    else document.getElementById("essay-lock").hidden = false;
-
-    if ("IntersectionObserver" in window) {
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false;
       var essay = document.getElementById("ensayo");
-      new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { essayInView = e.isIntersecting; syncRail(); });
-      }, { rootMargin: "0px 0px -60% 0px" }).observe(essay);
+      if (!essay || essay.hidden) return;
+      var vh = window.innerHeight;
+      updateFigures(vh);
+      updateScrolly(vh);
+      updateRail(vh);
+    });
+  }
 
-      var cio = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) { currentIdx = chapters.indexOf(e.target); updateRail(); }
-        });
-      }, { rootMargin: "-35% 0px -60% 0px" });
-      chapters.forEach(function (c) { cio.observe(c); });
-    }
+  /* Bloques que aparecen al entrar */
+  function watchReveal() {
+    var blocks = document.querySelectorAll(".chapter > h2, .chapter > p, .chapter > .fig, .chapter .scrolly__text > p, .refs ol, .refs > p");
+    blocks.forEach(function (b) { b.classList.add("sr"); });
+    if (reduceMotion || !("IntersectionObserver" in window)) { blocks.forEach(function (b) { b.classList.add("is-in"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -12% 0px" });
+    blocks.forEach(function (b) { io.observe(b); });
+  }
+
+  /* Barra de progreso de lectura */
+  var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  var rail = document.getElementById("rail");
+  var railButtons = [];
+  function buildRail() {
+    var list = document.getElementById("rail-list");
+    chapters.forEach(function (ch, i) {
+      var b = el("button", { type: "button", "aria-label": "Ir a " + ch.getAttribute("data-title") });
+      b.addEventListener("click", function () {
+        ch.querySelector("h2").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      });
+      railButtons.push(b);
+      list.appendChild(el("li", null, [b]));
+    });
+  }
+  var lastIdx = -1;
+  function updateRail(vh) {
+    if (!rail) return;
+    var essay = document.getElementById("ensayo").getBoundingClientRect();
+    rail.classList.toggle("is-shown", essay.top < vh * 0.4 && essay.bottom > vh * 0.3);
+    var idx = 0;
+    chapters.forEach(function (c, i) { if (c.getBoundingClientRect().top < vh * 0.45) idx = i; });
+    if (idx === lastIdx) return;
+    lastIdx = idx;
+    railButtons.forEach(function (b, i) {
+      b.classList.toggle("is-read", i < idx);
+      b.classList.toggle("is-current", i === idx);
+      if (i === idx) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    });
+    var label = document.getElementById("rail-label");
+    label.innerHTML = "";
+    label.appendChild(document.createTextNode("Sección " + (idx + 1) + " de " + chapters.length + ": "));
+    label.appendChild(el("b", { text: chapters[idx].getAttribute("data-title") }));
+  }
+
+  /* El ensayo aparece cuando se termina la prueba */
+  var session = { done: false, answers: null };
+  try { var saved = JSON.parse(sessionStorage.getItem("lqnr2")); if (saved) session = saved; } catch (e) {}
+  function saveSession() { try { sessionStorage.setItem("lqnr2", JSON.stringify(session)); } catch (e) {} }
+
+  function showEssay() {
+    var essay = document.getElementById("ensayo");
+    if (!essay.hidden) return;
+    essay.hidden = false;
+    if (rail) rail.hidden = false;
+    onScroll();
   }
 
   /* ------------------------------------------------------------
@@ -234,7 +256,7 @@
     return wrap;
   }
 
-  function renderItem() {
+  function renderItem(moveFocus) {
     var item = items[state.i];
     var current = { choice: null, conf: null };
     root.innerHTML = "";
@@ -257,38 +279,48 @@
     });
     var conf = el("div", { "class": "confidence", role: "group", "aria-labelledby": "conf-l" }, confBtns);
 
-    var last = state.i === items.length - 1;
-    var next = el("button", { "class": "btn btn--solid panel__next", type: "button", disabled: "", text: last ? "Ver resultados" : "Siguiente" });
-
+    var advancing = false;
     function update() {
       btnReal.setAttribute("aria-pressed", String(current.choice === "real"));
       btnAI.setAttribute("aria-pressed", String(current.choice === "ai"));
       confBtns.forEach(function (b, k) { b.setAttribute("aria-pressed", String(current.conf === k)); });
-      if (current.choice && current.conf !== null) next.removeAttribute("disabled");
-      else next.setAttribute("disabled", "");
+      if (current.choice && current.conf !== null && !advancing) {
+        advancing = true;
+        setTimeout(advance, reduceMotion ? 0 : 450);
+      }
+    }
+    function advance() {
+      state.answers[state.i] = { choice: current.choice, conf: CONF[current.conf].value };
+      state.i++;
+      if (state.i < items.length) renderItem(true); else finishQuiz();
     }
     btnReal.addEventListener("click", function () { current.choice = "real"; update(); });
     btnAI.addEventListener("click", function () { current.choice = "ai"; update(); });
     confBtns.forEach(function (b, k) { b.addEventListener("click", function () { current.conf = k; update(); }); });
-    next.addEventListener("click", function () {
-      state.answers[state.i] = { choice: current.choice, conf: CONF[current.conf].value };
-      state.i++;
-      if (state.i < items.length) renderItem(); else renderResults();
-      root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-    });
-
     var panel = el("div", { "class": "panel" }, [
       el("p", { "class": "question", text: item.type === "video" ? "¿Este video es real o fue generado con IA?" : "¿Esta imagen es real o fue generada con IA?" }),
       choice,
-      el("div", null, [el("p", { "class": "confidence-label", id: "conf-l", text: "¿Qué tan seguro estás?" }), conf]),
-      next
+      el("div", null, [el("p", { "class": "confidence-label", id: "conf-l", text: "¿Qué tan seguro estás?" }), conf])
     ]);
 
     var stage = el("div", { "class": "stage" }, [frame, panel]);
     root.appendChild(el("h2", { "class": "visually-hidden", text: "Prueba: pieza " + (state.i + 1) }));
-    root.appendChild(el("p", { "class": "progress" }, [dots, el("span", { text: "Pieza " + (state.i + 1) + " de " + items.length })]));
+    root.appendChild(el("p", { "class": "progress" }, [dots, el("span", { text: "Pieza " + (state.i + 1) + " de " + items.length + ". Algunas son reales y otras fueron generadas con IA." })]));
     root.appendChild(stage);
-    btnReal.focus({ preventScroll: true });
+    if (moveFocus) {
+      btnReal.focus({ preventScroll: true });
+      var top = root.getBoundingClientRect().top;
+      if (top < 0) root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    }
+  }
+
+  function finishQuiz() {
+    session.done = true;
+    session.answers = state.answers;
+    saveSession();
+    renderResults();
+    root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    showEssay();
   }
 
   function resultsPlane(aiResults) {
@@ -392,26 +424,28 @@
     });
     root.appendChild(el("section", { "class": "reveal", "aria-label": "Respuestas" }, [el("h3", { text: "Las respuestas" }), list]));
 
-    var readBtn = el("button", { "class": "btn btn--solid", type: "button", text: reading.done ? "Volver al ensayo" : "Abrir el ensayo" });
-    readBtn.addEventListener("click", function () {
-      var first = !reading.done;
-      openEssay();
-      goTo(first ? 0 : Math.max(0, reading.reached - 1), true);
-    });
     var again = el("button", { "class": "btn", type: "button", text: "Repetir la prueba" });
-    again.addEventListener("click", function () { state = { i: 0, answers: [] }; renderItem(); });
-    root.appendChild(el("div", { "class": "results__actions" }, [
-      readBtn,
-      again
-    ]));
+    again.addEventListener("click", function () { state = { i: 0, answers: [] }; renderItem(true); });
+    root.appendChild(el("div", { "class": "results__actions" }, [again]));
+    root.appendChild(el("p", { "class": "scroll-cue", text: "Sigue bajando: lo que acabas de vivir tiene nombre." }));
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     drawHeroHits();
     drawWaffles();
-    initEssay();
-    watchFigures();
-    var start = document.getElementById("quiz-start");
-    if (start && items.length) start.addEventListener("click", function () { renderItem(); });
+    buildScrolly();
+    buildRail();
+    watchReveal();
+    var essay = document.getElementById("ensayo");
+    if (session.done && session.answers && session.answers.length === items.length) {
+      state.answers = session.answers;
+      renderResults();
+    } else {
+      essay.hidden = true;
+      if (items.length) renderItem(false);
+    }
+    if (session.done) showEssay();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
   });
 })();

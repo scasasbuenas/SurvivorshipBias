@@ -26,23 +26,16 @@
       </h1>
       <p class="hero__dek">Un ensayo sobre el sesgo de supervivencia y la ilusión de que la inteligencia artificial está desapareciendo de las redes sociales.</p>
       <div class="hero__actions">
-        <a class="btn btn--solid" href="#prueba">Hacer la prueba</a>
+        <a class="btn btn--solid" href="#prueba">Empezar</a>
       </div>
     </div>
 
-    <figure class="hero__figure" aria-labelledby="fig1-cap">
+    <figure class="hero__figure">
       <svg viewBox="-20 -60 1000 830" role="img" aria-label="Diagrama de un bombardero visto desde arriba, con impactos rojos en las alas, el fuselaje y la cola; los motores y la cabina no tienen impactos.">
         <use href="assets/plane.svg#plane" class="plane-ink" x="0" y="0" width="960" height="716"/>
         <g id="hero-hits"></g>
-        <g aria-hidden="true">
-          <path class="leader" d="M150 232 Q128 180 108 128"/><text class="refnum" x="92" y="118">10</text>
-          <path class="leader" d="M405 140 Q360 70 312 22"/><text class="refnum" x="288" y="14">12</text>
-          <path class="leader" d="M512 470 Q580 500 640 500"/><text class="refnum" x="648" y="509">14</text>
-          <path class="leader" d="M862 270 Q900 210 916 160"/><text class="refnum" x="904" y="150">16</text>
-          <path class="leader" d="M620 650 Q660 720 700 740"/><text class="refnum" x="706" y="752">18</text>
-        </g>
+
       </svg>
-      <figcaption class="fig-label" id="fig1-cap">FIG. 1</figcaption>
     </figure>
   </div>
 
@@ -61,19 +54,13 @@
 
 <section class="quiz" id="prueba" aria-labelledby="prueba-titulo">
   <div class="quiz__wrap" id="quiz-root">
-    <h2 id="prueba-titulo">Antes de leer: ocho piezas</h2>
-    <p class="quiz__lede">Algunas son fotografías o videos reales. Otras fueron generadas con inteligencia artificial. En cada una, decide qué es y di qué tan seguro estás. Las respuestas aparecen al final, no antes.</p>
-    <button class="btn btn--solid" type="button" id="quiz-start">Empezar la prueba</button>
-    <noscript><p class="quiz__lede">La prueba necesita JavaScript. El ensayo se puede leer sin él.</p></noscript>
+    <h2 id="prueba-titulo" class="visually-hidden">Prueba: ¿real o generada con IA?</h2>
+    <noscript><p class="quiz__lede">La prueba interactiva necesita JavaScript. El ensayo se puede leer más abajo.</p></noscript>
   </div>
 </section>
 
 <article class="essay" id="ensayo" aria-label="Ensayo">
-  <div class="essay__lock" id="essay-lock" hidden>
-    <p class="fig-label">El ensayo está cerrado</p>
-    <p>Se abre al terminar la prueba. Así lees los datos después de haber vivido el sesgo, no antes.</p>
-    <a class="btn btn--solid" href="#prueba">Ir a la prueba</a>
-  </div>
+
 
   <section class="chapter" id="cap-1" aria-labelledby="cap-1-t" data-title="Lo que no regresa">
   <h2 id="cap-1-t" tabindex="-1">Lo que no regresa</h2>
@@ -86,11 +73,47 @@
 
   <section class="chapter" id="cap-2" aria-labelledby="cap-2-t" data-title="El avión que sí volvió">
   <h2 id="cap-2-t" tabindex="-1">El avión que sí volvió</h2>
-  <p>La imagen clásica del sesgo de supervivencia proviene de la Segunda Guerra Mundial. Según el relato más difundido, el ejército estadounidense estudió los bombarderos que regresaban de sus misiones para decidir dónde reforzar el blindaje, y la intuición inicial fue proteger las zonas con más impactos. El estadístico Abraham Wald, del Statistical Research Group de la Universidad de Columbia, propuso lo contrario: reforzar las zonas sin impactos, porque los aviones alcanzados allí eran precisamente los que no habían regresado (Mangel y Samaniego, 1984).</p>
-  <p>La FIG. 1 reproduce el diagrama con el que suele explicarse esta historia. Los impactos <span class="ref">(16)</span> se concentran en las alas <span class="ref">(10)</span>, el fuselaje <span class="ref">(14)</span> y la cola <span class="ref">(18)</span>, mientras que los motores <span class="ref">(12)</span> y la cabina aparecen limpios. Leído con ingenuidad, el diagrama dice que los motores son la parte más segura del avión. Leído como lo leyó Wald, dice lo contrario: los aviones con impactos en los motores no volvieron para ser contados.</p>
-  <p>Conviene una precisión. Los historiadores de la estadística advierten que existe muy poco material de primera mano sobre lo que Wald dijo exactamente acerca del daño en los aviones, y que buena parte de la anécdota es una reconstrucción plausible (Casselman, 2016). Su valor, sin embargo, no depende del detalle histórico sino de la lógica: cuando una muestra está filtrada por la supervivencia, la ausencia de datos en un lugar no indica ausencia del fenómeno. Puede indicar exactamente lo contrario.</p>
-  <p>Nassim Taleb (2008) llama a esto <em>evidencia silenciosa</em>: los casos que no superaron el filtro no dejan rastro y por eso se omiten de las conclusiones. Dos variantes populares del mismo error resultan útiles aquí. La primera es la llamada falacia del peluquín, una forma de sesgo de selección y de supervivencia (RationalWiki, s. f.): la convicción de que todos los peluquines se notan, sostenida por alguien que solo ha visto los que se notan, porque los convincentes pasaron inadvertidos. La segunda viene del cine. Ante la queja recurrente de que los efectos digitales se ven falsos, el ensayo audiovisual de RocketJump Film School (2015) mostró que solo se comenta el CGI evidente, mientras que la gran mayoría de los efectos digitales pasa completamente desapercibida (The Conversation, 2016).</p>
-  <p>El caso del contenido de IA tiene exactamente esta estructura. Quien afirma que ya no ve tanta IA está observando los aviones que regresaron: las imágenes con seis dedos, los videos con física imposible, las voces robóticas. A partir de ellos concluye que el problema disminuye. Pero el dato relevante es el que no ve.</p>
+    <div class="scrolly">
+      <figure class="scrolly__fig" aria-labelledby="scrolly-cap">
+        <svg id="scrolly-plane" data-step="0" viewBox="-20 -60 1000 830" role="img" aria-label="El diagrama del bombardero. Los impactos aparecen a medida que se avanza en la lectura.">
+          <use href="assets/plane.svg#plane" class="plane-ink" x="0" y="0" width="960" height="716"/>
+          <g class="scrolly-hits"></g>
+          <g class="scrolly-rings">
+            <circle class="ghost" cx="377" cy="185" r="34"/>
+            <circle class="ghost" cx="573" cy="185" r="34"/>
+            <circle class="ghost" cx="475" cy="172" r="28"/>
+          </g>
+          <g class="scrolly-refs" aria-hidden="true">
+            <path class="leader" d="M150 232 Q128 180 108 128"/><text class="refnum" x="92" y="118">10</text>
+            <path class="leader" d="M405 140 Q360 70 312 22"/><text class="refnum" x="288" y="14">12</text>
+            <path class="leader" d="M512 470 Q580 500 640 500"/><text class="refnum" x="648" y="509">14</text>
+            <path class="leader" d="M862 270 Q900 210 916 160"/><text class="refnum" x="904" y="150">16</text>
+            <path class="leader" d="M620 650 Q660 720 700 740"/><text class="refnum" x="706" y="752">18</text>
+          </g>
+          <g class="scrolly-labels" aria-hidden="true">
+            <text class="tag tag--red" x="40" y="180">lo que se nota</text>
+            <text class="tag" x="640" y="70">lo que no se nota</text>
+            <path class="leader" d="M636 62 Q600 70 590 150"/>
+          </g>
+        </svg>
+        <figcaption>
+          <span class="fig-label">FIG. 1</span>
+          <span class="scrolly__cap" id="scrolly-cap" aria-live="polite"
+            data-s1="Los impactos de los aviones que regresaron."
+            data-s2="Los motores (12) y la cabina no tienen impactos."
+            data-s3="El diagrama es posterior a Wald, pero la lógica se sostiene."
+            data-s4="La evidencia silenciosa: lo que nunca llegó a la muestra."
+            data-s5="En rojo, la IA que se nota. En punteado, la que no.">Los impactos de los aviones que regresaron.</span>
+        </figcaption>
+      </figure>
+      <div class="scrolly__text">
+        <p data-step="1">La imagen clásica del sesgo de supervivencia proviene de la Segunda Guerra Mundial. Según el relato más difundido, el ejército estadounidense estudió los bombarderos que regresaban de sus misiones para decidir dónde reforzar el blindaje, y la intuición inicial fue proteger las zonas con más impactos. El estadístico Abraham Wald, del Statistical Research Group de la Universidad de Columbia, propuso lo contrario: reforzar las zonas sin impactos, porque los aviones alcanzados allí eran precisamente los que no habían regresado (Mangel y Samaniego, 1984).</p>
+        <p data-step="2">La FIG. 1 reproduce el diagrama con el que suele explicarse esta historia. Los impactos <span class="ref">(16)</span> se concentran en las alas <span class="ref">(10)</span>, el fuselaje <span class="ref">(14)</span> y la cola <span class="ref">(18)</span>, mientras que los motores <span class="ref">(12)</span> y la cabina aparecen limpios. Leído con ingenuidad, el diagrama dice que los motores son la parte más segura del avión. Leído como lo leyó Wald, dice lo contrario: los aviones con impactos en los motores no volvieron para ser contados.</p>
+        <p data-step="3">Conviene una precisión. Los historiadores de la estadística advierten que existe muy poco material de primera mano sobre lo que Wald dijo exactamente acerca del daño en los aviones, y que buena parte de la anécdota es una reconstrucción plausible (Casselman, 2016). Su valor, sin embargo, no depende del detalle histórico sino de la lógica: cuando una muestra está filtrada por la supervivencia, la ausencia de datos en un lugar no indica ausencia del fenómeno. Puede indicar exactamente lo contrario.</p>
+        <p data-step="4">Nassim Taleb (2008) llama a esto <em>evidencia silenciosa</em>: los casos que no superaron el filtro no dejan rastro y por eso se omiten de las conclusiones. Dos variantes populares del mismo error resultan útiles aquí. La primera es la llamada falacia del peluquín, una forma de sesgo de selección y de supervivencia (RationalWiki, s. f.): la convicción de que todos los peluquines se notan, sostenida por alguien que solo ha visto los que se notan, porque los convincentes pasaron inadvertidos. La segunda viene del cine. Ante la queja recurrente de que los efectos digitales se ven falsos, el ensayo audiovisual de RocketJump Film School (2015) mostró que solo se comenta el CGI evidente, mientras que la gran mayoría de los efectos digitales pasa completamente desapercibida (The Conversation, 2016).</p>
+        <p data-step="5">El caso del contenido de IA tiene exactamente esta estructura. Quien afirma que ya no ve tanta IA está observando los aviones que regresaron: las imágenes con seis dedos, los videos con física imposible, las voces robóticas. A partir de ellos concluye que el problema disminuye. Pero el dato relevante es el que no ve.</p>
+      </div>
+    </div>
   </section>
 
   <section class="chapter" id="cap-3" aria-labelledby="cap-3-t" data-title="Ya no se nota">

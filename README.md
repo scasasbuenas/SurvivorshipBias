@@ -15,11 +15,11 @@ Sitio: https://scasasbuenas.github.io/SurvivorshipBias/
 ## Cómo se lee
 
 1. Portada.
-2. La prueba de ocho piezas. El ensayo está cerrado hasta terminarla.
+2. La prueba de ocho piezas, directamente. Cada pieza avanza sola al elegir la respuesta y la confianza.
 3. Resultados y respuestas.
-4. El ensayo se abre sección por sección con el botón "Seguir" al final de cada una. Los gráficos se dibujan al entrar en pantalla.
+4. Al seguir bajando aparece el ensayo. Todo cambia con el scroll: los párrafos entran al llegar a ellos, el avión de la sección de Wald se transforma párrafo a párrafo y los gráficos se dibujan (o se deshacen) según cuánto se baja.
 
-El avance se guarda solo mientras la pestaña del navegador está abierta. Para empezar de cero (por ejemplo, antes de presentar), cierra la pestaña y abre la página de nuevo.
+El ensayo solo aparece después de terminar la prueba. Eso se recuerda mientras la pestaña esté abierta; para empezar de cero (por ejemplo, antes de presentar), cierra la pestaña y abre la página de nuevo.
 
 ## Cambiar las piezas de la prueba
 
